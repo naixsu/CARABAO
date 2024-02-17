@@ -64,4 +64,4 @@ script = ExtResource("1_y5i3h")
 position = Vector2(2, -8)
 sprite_frames = SubResource("SpriteFrames_gbtgv")
 animation = &"run"
-frame_progress = 0.693481
+frame_progress = 0.70933

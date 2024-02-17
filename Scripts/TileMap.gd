@@ -11,6 +11,10 @@ extends TileMap
 
 var gridSize = 5
 var tileDict = {}
+var newTileDict = {}
+var overlayTiles = []
+var radius = 1
+var tilledCount = 0
 
 var rows = 11
 var cols = 20
@@ -30,7 +34,8 @@ enum State {
 	PLANTING, # 3
 	HARVESTING, # 4
 	RANDOM, # 5
-	GAMEOVER # 6
+	LOOKING, # 6
+	GAMEOVER # 7
 }
 
 var currentState = State.SETUP : set = set_state
@@ -43,7 +48,8 @@ var tilemapTiles = {
 	"tilled": 2,
 	"grassTiles": 3,
 	"tilledTiles": 4,
-	"plantTiles": 5
+	"plantTiles": 5,
+	"overlay": 6
 }
 
 var tilemapLayers = {
@@ -51,6 +57,7 @@ var tilemapLayers = {
 	"hover": 1,
 	"tilled": 2,
 	"plant": 3,
+	"overlay": 4
 }
 
 func _ready():
@@ -70,15 +77,59 @@ func _input(event):
 	# Click to till
 	if event.is_action_pressed("Click"):
 		if currentState == State.TILLING:
-			set_tile(tile, "tilled", false)
+			set_tile(tile, "tilled", true)
 		elif currentState == State.CARABAO:
-			set_tile(tile, "carabao", false)
+			set_tile(tile, "carabao", true)
 	if event.is_action_pressed("RClick"):
-		set_tile(tile, "grass", false)
+		set_tile(tile, "grass", true)
 
 
-func set_tile(pos: Vector2, type: String, random: bool):
-	if not random and not tileDict.has(str(tile)):
+func plant_tiles():
+	# set newDict tiles
+	for tileData in tileDict.values():
+		if not tileData.isOuter:
+			newTileDict[str(tileData.pos)] = tileData
+	
+	#for t in newTileDict.values():
+		#print(t)
+	
+	print(mainCarabao.pos)
+	
+	look_for_tiles()
+	
+	
+func look_for_tiles():
+	set_state(State.LOOKING)
+	set_tile(mainCarabao.pos, "overlay", false)
+	
+	if radius == 1:
+		overlayTiles.append(mainCarabao.pos)
+	
+	var newOverlayTiles = []
+	
+	for tilePos in overlayTiles:
+		print(tilePos)
+		# Add the current tile to the list
+		newOverlayTiles.append(tilePos)
+		
+		# Get the neighbors (up, down, left, right) of the current tile
+		var neighbors = [
+			tilePos + Vector2i(0, -1),  # Up
+			tilePos + Vector2i(0, 1),   # Down
+			tilePos + Vector2i(-1, 0),  # Left
+			tilePos + Vector2i(1, 0)    # Right
+		]
+		
+		# Add the neighbors to the list
+		for neighbor in neighbors:
+			if neighbor not in newOverlayTiles:
+				newOverlayTiles.append(neighbor)
+				set_tile(neighbor, "overlay", false)
+	
+	print(newOverlayTiles)
+
+func set_tile(pos: Vector2, type: String, click: bool):
+	if click and not tileDict.has(str(tile)):
 		return
 		
 	var tileObj = tileDict[str(pos)]
@@ -95,11 +146,11 @@ func set_tile(pos: Vector2, type: String, random: bool):
 		if not carabaoSpawned:
 			spawn_carabao(tile)
 		else:
-			mainCarabao.position = map_to_local(tile)
+			#mainCarabao.position = map_to_local(tile)
+			move_carabao(tile)
 		
 		plantButton.disabled = false
-		
-		
+			
 	elif type == "seed":
 		tileObj.isSeed = true
 		
@@ -112,13 +163,29 @@ func set_tile(pos: Vector2, type: String, random: bool):
 			tileObj.isTilled = false
 			check_tilled_dict()
 	
+	elif type == "overlay" and not tileDict[str(pos)].isOuter \
+		and currentState == State.LOOKING: # planting
+			set_cell(tilemapLayers["overlay"], pos, tilemapTiles["overlay"], Vector2i(0, 0), 0)
+	
 	print(tileObj)
+
+
+func distance_to_carabao(pos: Vector2i):
+	return mainCarabao.pos.distance_squared_to(pos)
+
+
+func move_carabao(pos: Vector2i):
+	mainCarabao.position = map_to_local(pos)
+	mainCarabao.pos = pos
+	
+	print("Carabao moved to: ", mainCarabao.position, " : ", mainCarabao.pos)
 
 
 func spawn_carabao(pos: Vector2i):
 	var carabao = CarabaoScene.instantiate()
 	mainCarabao = carabao
-	mainCarabao.position = map_to_local(pos)
+	
+	move_carabao(pos)
 	
 	var root = get_tree().get_root()
 	var main = root.get_node("Main")
@@ -130,9 +197,11 @@ func check_tilled_dict():
 	var count = 0
 
 	for tileData in tileDict.values():
-		if tileData["isTilled"]:
+		if tileData.isTilled:
 			count += 1
-
+			
+	tilledCount = count
+	
 	if count > 0:
 		carabaoButton.disabled = false
 	else:
@@ -147,7 +216,7 @@ func set_state(newState):
 	print("state changed: ", currentState)
 	
 	disable_button_on_state()
-	
+
 
 func disable_button_on_state():
 	match currentState:
@@ -177,8 +246,6 @@ func disable_button_on_state():
 			carabaoButton.disabled = false
 			randomButton.disabled = false
 
-			
-
 
 func clear_tiles():
 	# Clear all tilled tiles
@@ -198,14 +265,14 @@ func clear_tiles():
 			if mainCarabao == null:
 				spawn_carabao(coords)
 			else:
-				mainCarabao.position = map_to_local(coords)
+				move_carabao(coords)
 				
 			carabaoSpawned = true
 	
 	# Set isTilled on all tiles to false
 	
 	for tileData in tileDict.values():
-		if tileData["isTilled"]:
+		if tileData.isTilled:
 			tileData.isTilled = false
 			
 	# Random till
@@ -220,10 +287,12 @@ func clear_tiles():
 			var pos = Vector2(col, row)
 			
 			if randf() < randomTilledChance:
-				set_tile(pos, "tilled", true)
+				set_tile(pos, "tilled", false)
+
 
 func randomize_tiles():
 	clear_tiles()
+
 
 func erase_layer_tiles(layer: int):
 	for col in cols:
@@ -321,6 +390,7 @@ func init():
 
 func _on_plant_button_pressed():
 	set_state(State.PLANTING)
+	plant_tiles()
 
 
 func _on_hoe_button_pressed():
