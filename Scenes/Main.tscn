@@ -1,9 +1,26 @@
-[gd_scene load_steps=2 format=3 uid="uid://csjhvyusgnjka"]
+[gd_scene load_steps=7 format=3 uid="uid://csjhvyusgnjka"]
+
+[ext_resource type="Script" path="res://Scripts/TileMap.gd" id="1_m65e4"]
+[ext_resource type="Texture2D" uid="uid://bdwf4xtvp787e" path="res://Assets/Tiles/Grass Tile.png" id="1_nu5bm"]
+[ext_resource type="Texture2D" uid="uid://bojwi5gk6aoi3" path="res://Assets/Tiles/Cursor.png" id="2_s64sc"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gri84"]
+texture = ExtResource("1_nu5bm")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5b28i"]
+texture = ExtResource("2_s64sc")
+0:0/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_v2age"]
+sources/0 = SubResource("TileSetAtlasSource_gri84")
+sources/1 = SubResource("TileSetAtlasSource_5b28i")
 
 [node name="Main" type="Node2D"]
 
 [node name="TileMap" type="TileMap" parent="."]
+texture_filter = 1
 tile_set = SubResource("TileSet_v2age")
 format = 2
+layer_1/tile_data = PackedInt32Array()
+script = ExtResource("1_m65e4")
