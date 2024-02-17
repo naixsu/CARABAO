@@ -4,7 +4,6 @@ extends TileMap
 @onready var carabaoButton = $"../CarabaoButton"
 @onready var randomButton = $"../RandomButton"
 @onready var plantButton = $"../PlantButton"
-@onready var lookTimer = $"../LookTimer"
 
 
 @export var CarabaoScene : PackedScene
@@ -17,7 +16,7 @@ var overlayTiles = []
 var newOverlayTiles = []
 var radius = 0
 var tilledCount = 0
-var lookingForTiles : bool = false
+var lookTime = .5
 
 var rows = 11
 var cols = 20
@@ -38,7 +37,8 @@ enum State {
 	HARVESTING, # 4
 	RANDOM, # 5
 	LOOKING, # 6
-	GAMEOVER # 7
+	MOVING, # 7
+	GAMEOVER # 8
 }
 
 var currentState = State.SETUP : set = set_state
@@ -74,6 +74,9 @@ func _process(_delta):
 
 	erase_layer_tiles(tilemapLayers["hover"])
 	hover_tile()
+	
+	#if carabaoSpawned:
+		#print(local_to_map(mainCarabao.position))
 
 
 func _input(event):
@@ -99,22 +102,41 @@ func plant_tiles():
 	print(mainCarabao.pos)
 	print("tilledCount: ", tilledCount)
 	look_for_tiles()
-	#while tilledCount > 0:
-		## add timer here
-		## perform look_for_tiles when timer is 0
-		#
-		#if not lookingForTiles:
-			#print(lookingForTiles)
-			#lookTimer.start()
-			#lookingForTiles = true
-			#
-		#if lookTimer.is_stopped():
-			#radius += 1
-			#look_for_tiles()
+
+
+func calculate_travel_time(start: Vector2, end: Vector2, speed: float) -> float:
+	var distance = start.distance_to(end)
+	var time = distance / speed
+	return time + 1
+
+
+func move_to(t: Vector2i):
+	set_state(State.MOVING)
+	# move carabao from mainCarabao.pos to t
+	var targetPosition = map_to_local(t)
+	print(targetPosition)
+
+	#var tween = create_tween()
+	##tween.tween_property(mainCarabao, "position", Vector2(mainCarabao.pos.x, mainCarabao.pos.y), 1)
+	#var time = calculate_travel_time(mainCarabao.pos, t, mainCarabao.speed)
+	#print("TIME: ", time)
+	#tween.tween_property(mainCarabao, "position", Vector2(target_position.x, target_position.y), time)
+	#mainCarabao.play_run()
+	mainCarabao.go_towards_target_point(mainCarabao.position, targetPosition)
+	
+	
+	
+
+func check_for_tilled():
+	print("Checking for tilled tiles among overlays")
+	for t in overlayTiles:
+		if newTileDict[str(t)].isTilled:
+			move_to(t)
+
 	
 	
 func look_for_tiles():
-	await get_tree().create_timer(1).timeout
+	await get_tree().create_timer(lookTime).timeout
 	set_state(State.LOOKING)
 	radius += 1
 	print("Looking for tiles with radius: ", radius)
@@ -124,8 +146,8 @@ func look_for_tiles():
 	
 	if radius == 1:
 		overlayTiles.append(mainCarabao.pos)
-		if tilledCount > 0:
-			print("rad 1")
+		check_for_tilled()
+		if currentState == State.LOOKING:
 			look_for_tiles()
 		return
 		
@@ -156,9 +178,9 @@ func look_for_tiles():
 	
 	#print(newOverlayTiles)
 	overlayTiles = newOverlayTiles
+	check_for_tilled()
 	
-	if tilledCount > 0:
-		print("here")
+	if currentState == State.LOOKING:
 		look_for_tiles()
 
 func set_tile(pos: Vector2, type: String, click: bool):

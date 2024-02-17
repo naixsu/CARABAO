@@ -269,9 +269,6 @@ theme = ExtResource("9_4b46k")
 position = Vector2(12, 11)
 texture = ExtResource("13_purdw")
 
-[node name="LookTimer" type="Timer" parent="."]
-one_shot = true
-
 [connection signal="pressed" from="HoeButton" to="TileMap" method="_on_hoe_button_pressed"]
 [connection signal="pressed" from="CarabaoButton" to="TileMap" method="_on_carabao_button_pressed"]
 [connection signal="pressed" from="PlantButton" to="TileMap" method="_on_plant_button_pressed"]
