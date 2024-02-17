@@ -220,7 +220,7 @@ layer_1/z_index = 10
 layer_1/tile_data = PackedInt32Array()
 layer_2/tile_data = PackedInt32Array()
 layer_3/tile_data = PackedInt32Array()
-layer_4/modulate = Color(1, 1, 1, 0.392157)
+layer_4/modulate = Color(1, 1, 1, 0.294118)
 layer_4/tile_data = PackedInt32Array()
 script = ExtResource("1_m65e4")
 CarabaoScene = ExtResource("14_b15w6")
@@ -268,6 +268,9 @@ theme = ExtResource("9_4b46k")
 [node name="Sprite2D" type="Sprite2D" parent="RandomButton"]
 position = Vector2(12, 11)
 texture = ExtResource("13_purdw")
+
+[node name="LookTimer" type="Timer" parent="."]
+one_shot = true
 
 [connection signal="pressed" from="HoeButton" to="TileMap" method="_on_hoe_button_pressed"]
 [connection signal="pressed" from="CarabaoButton" to="TileMap" method="_on_carabao_button_pressed"]

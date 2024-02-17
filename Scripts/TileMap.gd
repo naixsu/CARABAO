@@ -4,6 +4,7 @@ extends TileMap
 @onready var carabaoButton = $"../CarabaoButton"
 @onready var randomButton = $"../RandomButton"
 @onready var plantButton = $"../PlantButton"
+@onready var lookTimer = $"../LookTimer"
 
 
 @export var CarabaoScene : PackedScene
@@ -13,8 +14,10 @@ var gridSize = 5
 var tileDict = {}
 var newTileDict = {}
 var overlayTiles = []
-var radius = 1
+var newOverlayTiles = []
+var radius = 0
 var tilledCount = 0
+var lookingForTiles : bool = false
 
 var rows = 11
 var cols = 20
@@ -94,21 +97,42 @@ func plant_tiles():
 		#print(t)
 	
 	print(mainCarabao.pos)
-	
+	print("tilledCount: ", tilledCount)
 	look_for_tiles()
+	#while tilledCount > 0:
+		## add timer here
+		## perform look_for_tiles when timer is 0
+		#
+		#if not lookingForTiles:
+			#print(lookingForTiles)
+			#lookTimer.start()
+			#lookingForTiles = true
+			#
+		#if lookTimer.is_stopped():
+			#radius += 1
+			#look_for_tiles()
 	
 	
 func look_for_tiles():
+	await get_tree().create_timer(1).timeout
 	set_state(State.LOOKING)
+	radius += 1
+	print("Looking for tiles with radius: ", radius)
+	erase_layer_tiles(tilemapLayers["overlay"])
+	
 	set_tile(mainCarabao.pos, "overlay", false)
 	
 	if radius == 1:
 		overlayTiles.append(mainCarabao.pos)
-	
-	var newOverlayTiles = []
+		if tilledCount > 0:
+			print("rad 1")
+			look_for_tiles()
+		return
+		
+	newOverlayTiles = []
 	
 	for tilePos in overlayTiles:
-		print(tilePos)
+		#print(tilePos)
 		# Add the current tile to the list
 		newOverlayTiles.append(tilePos)
 		
@@ -122,11 +146,20 @@ func look_for_tiles():
 		
 		# Add the neighbors to the list
 		for neighbor in neighbors:
+			if neighbor.y > 7 or neighbor.y < 2 or\
+				neighbor.x > 17 or neighbor.x < 2:
+					print("Out of bounds: ", neighbor)
+					continue
 			if neighbor not in newOverlayTiles:
 				newOverlayTiles.append(neighbor)
 				set_tile(neighbor, "overlay", false)
 	
-	print(newOverlayTiles)
+	#print(newOverlayTiles)
+	overlayTiles = newOverlayTiles
+	
+	if tilledCount > 0:
+		print("here")
+		look_for_tiles()
 
 func set_tile(pos: Vector2, type: String, click: bool):
 	if click and not tileDict.has(str(tile)):
@@ -167,7 +200,7 @@ func set_tile(pos: Vector2, type: String, click: bool):
 		and currentState == State.LOOKING: # planting
 			set_cell(tilemapLayers["overlay"], pos, tilemapTiles["overlay"], Vector2i(0, 0), 0)
 	
-	print(tileObj)
+	print("set tile: ", tileObj)
 
 
 func distance_to_carabao(pos: Vector2i):
