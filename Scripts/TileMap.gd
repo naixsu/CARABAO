@@ -9,6 +9,16 @@ var cols = 20
 
 var tile : Vector2
 
+
+enum State {
+	SETUP, # 0
+	PLANTING, # 1
+	HARVESTING, # 2
+	GAMEOVER # 3
+}
+
+var currentState = State.SETUP : set = set_state
+
 # This var is dependent on the tile IDs in TileMap
 # DO NOT CHANGE
 var tilemapTiles = {
@@ -53,19 +63,29 @@ func set_tile(pos: Vector2, type: String):
 		
 	var tileObj = tileDict[str(pos)]
 	
-	if type == "tilled": # till tile
+	if type == "tilled" and currentState == State.PLANTING: # till tile
 		tileObj.isTilled = true
 		set_cell(tilemapLayers["tilled"], pos, tilemapTiles["tilledTiles"], Vector2i(1, 1), 0)
 	elif type == "seed":
 		tileObj.isSeed = true
 	elif type == "grow":
 		tileObj.isGrown = true
-	elif type == "grass": # untill tile
+	elif type == "grass" and currentState == State.PLANTING: # untill tile
 		if tileObj.isTilled and not tileObj.isSeed:
 			erase_cell(tilemapLayers["tilled"], tile)
 			tileObj.isTilled = false
 	
 	print(tileObj)
+
+
+func set_state(newState):
+	if newState == currentState:
+		return
+	
+	currentState = newState
+	print("state changed: ", currentState)
+	
+
 
 func erase_hover_tiles():
 	for col in cols:
@@ -153,3 +173,5 @@ func init():
 					atlas = Vector2i(ranX, ranY)
 
 			init_set_tile(pos, atlas, isOuter)
+
+	set_state(State.PLANTING)
