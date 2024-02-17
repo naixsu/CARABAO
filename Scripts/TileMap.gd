@@ -110,6 +110,10 @@ func calculate_travel_time(start: Vector2, end: Vector2, speed: float) -> float:
 	return time + 1
 
 
+func stop_moving():
+	print("Stop moving")
+
+
 func move_to(t: Vector2i):
 	set_state(State.MOVING)
 	# move carabao from mainCarabao.pos to t
@@ -245,6 +249,7 @@ func spawn_carabao(pos: Vector2i):
 	var root = get_tree().get_root()
 	var main = root.get_node("Main")
 	main.add_child(mainCarabao)
+	mainCarabao.connect("stop_moving", stop_moving)
 	carabaoSpawned = true
 
 

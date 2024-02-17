@@ -1,9 +1,12 @@
 extends CharacterBody2D
 
+signal stop_moving
+
 @onready var anim = $AnimatedSprite2D
 var pos : Vector2i
 var speed = 100
 var targetPos : Vector2
+var moving = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -13,6 +16,9 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	# Round each component of the position vector based on decimal value
+	if not moving:
+		return
+		
 	var x = "%.2f" % position.x
 	var y = "%.2f" % position.y
 	var splitX = x.split(".")
@@ -31,16 +37,21 @@ func _process(_delta):
 	
 	if reformed == targetPos:
 		velocity = Vector2.ZERO
+		stop_moving.emit()
+		play_idle()
+		moving = false
 		
 	move_and_slide()
 
 
 func go_towards_target_point(currentAgentPosition, nextPathPosition):
+	moving = true
 	var newVelocity: Vector2 = nextPathPosition - currentAgentPosition
 	targetPos = nextPathPosition
 	newVelocity = newVelocity.normalized()
 	newVelocity = newVelocity * speed
 	velocity = newVelocity
+	play_run()
 	
 
 func play_run():
