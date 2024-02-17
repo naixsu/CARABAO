@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://csjhvyusgnjka"]
+[gd_scene load_steps=14 format=3 uid="uid://csjhvyusgnjka"]
 
 [ext_resource type="Script" path="res://Scripts/TileMap.gd" id="1_m65e4"]
 [ext_resource type="Texture2D" uid="uid://bdwf4xtvp787e" path="res://Assets/Tiles/Grass Tile.png" id="1_nu5bm"]
@@ -7,7 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://beesme6xwchok" path="res://Assets/UI/background.png" id="4_g47nv"]
 [ext_resource type="Texture2D" uid="uid://3ycftx5xq8ew" path="res://Assets/External/Sprout Lands - Sprites - Basic pack/Tilesets/Grass.png" id="5_cjc4v"]
 [ext_resource type="Texture2D" uid="uid://d3m2cevkns2pa" path="res://Assets/External/Sprout Lands - Sprites - Basic pack/Tilesets/Tilled_Dirt.png" id="6_h73ne"]
-[ext_resource type="Texture2D" uid="uid://b70i7yxnqpbd8" path="res://Assets/External/Sprout Lands - Sprites - Basic pack/Objects/Basic_Plants.png" id="7_ixhpj"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gri84"]
 texture = ExtResource("1_nu5bm")
@@ -168,28 +167,12 @@ texture = ExtResource("6_h73ne")
 8:6/0 = 0
 9:6/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fw1eb"]
-texture = ExtResource("7_ixhpj")
-0:0/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-3:0/0 = 0
-4:0/0 = 0
-5:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-2:1/0 = 0
-3:1/0 = 0
-4:1/0 = 0
-5:1/0 = 0
-
 [sub_resource type="TileSet" id="TileSet_v2age"]
 sources/0 = SubResource("TileSetAtlasSource_gri84")
 sources/1 = SubResource("TileSetAtlasSource_5b28i")
 sources/2 = SubResource("TileSetAtlasSource_i0u3j")
 sources/3 = SubResource("TileSetAtlasSource_hc85d")
 sources/4 = SubResource("TileSetAtlasSource_oofjp")
-sources/5 = SubResource("TileSetAtlasSource_fw1eb")
 
 [node name="Main" type="Node2D"]
 
@@ -203,10 +186,7 @@ expand_mode = 1
 texture_filter = 1
 tile_set = SubResource("TileSet_v2age")
 format = 2
-layer_1/z_index = 10
 layer_1/tile_data = PackedInt32Array()
-layer_2/tile_data = PackedInt32Array()
-layer_3/tile_data = PackedInt32Array()
 script = ExtResource("1_m65e4")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
