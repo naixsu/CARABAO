@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://csjhvyusgnjka"]
+[gd_scene load_steps=22 format=3 uid="uid://csjhvyusgnjka"]
 
 [ext_resource type="Script" path="res://Scripts/TileMap.gd" id="1_m65e4"]
 [ext_resource type="Texture2D" uid="uid://bdwf4xtvp787e" path="res://Assets/Tiles/Grass Tile.png" id="1_nu5bm"]
@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://vbjl3wqf1ajn" path="res://Assets/UI/hoe.png" id="11_wxw52"]
 [ext_resource type="Texture2D" uid="uid://b3vnhjx6h3dcx" path="res://Assets/UI/carabao.png" id="12_41el4"]
 [ext_resource type="Texture2D" uid="uid://xmyby4ihsrnf" path="res://Assets/UI/random.png" id="13_purdw"]
+[ext_resource type="PackedScene" uid="uid://d3j60vl6mq5k1" path="res://Scenes/Carabao.tscn" id="14_b15w6"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gri84"]
 texture = ExtResource("1_nu5bm")
@@ -213,22 +214,12 @@ layer_1/tile_data = PackedInt32Array()
 layer_2/tile_data = PackedInt32Array()
 layer_3/tile_data = PackedInt32Array()
 script = ExtResource("1_m65e4")
+CarabaoScene = ExtResource("14_b15w6")
 
-[node name="PlantButton" type="Button" parent="."]
+[node name="HoeButton" type="Button" parent="."]
 offset_left = 98.0
 offset_top = 145.0
 offset_right = 122.0
-offset_bottom = 169.0
-theme = ExtResource("9_4b46k")
-
-[node name="Sprite2D" type="Sprite2D" parent="PlantButton"]
-position = Vector2(12, 11)
-texture = ExtResource("10_j3tts")
-
-[node name="HoeButton" type="Button" parent="."]
-offset_left = 126.0
-offset_top = 145.0
-offset_right = 150.0
 offset_bottom = 169.0
 theme = ExtResource("9_4b46k")
 
@@ -237,15 +228,26 @@ position = Vector2(12, 11)
 texture = ExtResource("11_wxw52")
 
 [node name="CarabaoButton" type="Button" parent="."]
-offset_left = 155.0
+offset_left = 126.0
 offset_top = 145.0
-offset_right = 179.0
+offset_right = 150.0
 offset_bottom = 169.0
 theme = ExtResource("9_4b46k")
 
 [node name="Sprite2D" type="Sprite2D" parent="CarabaoButton"]
 position = Vector2(12, 11)
 texture = ExtResource("12_41el4")
+
+[node name="PlantButton" type="Button" parent="."]
+offset_left = 155.0
+offset_top = 145.0
+offset_right = 179.0
+offset_bottom = 169.0
+theme = ExtResource("9_4b46k")
+
+[node name="Sprite2D" type="Sprite2D" parent="PlantButton"]
+position = Vector2(12, 11)
+texture = ExtResource("10_j3tts")
 
 [node name="RandomButton" type="Button" parent="."]
 offset_left = 184.0
@@ -257,3 +259,8 @@ theme = ExtResource("9_4b46k")
 [node name="Sprite2D" type="Sprite2D" parent="RandomButton"]
 position = Vector2(12, 11)
 texture = ExtResource("13_purdw")
+
+[connection signal="pressed" from="HoeButton" to="TileMap" method="_on_hoe_button_pressed"]
+[connection signal="pressed" from="CarabaoButton" to="TileMap" method="_on_carabao_button_pressed"]
+[connection signal="pressed" from="PlantButton" to="TileMap" method="_on_plant_button_pressed"]
+[connection signal="pressed" from="RandomButton" to="TileMap" method="_on_random_button_pressed"]

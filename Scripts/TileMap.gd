@@ -1,5 +1,13 @@
 extends TileMap
 
+@onready var hoeButton = $"../HoeButton"
+@onready var carabaoButton = $"../CarabaoButton"
+@onready var randomButton = $"../RandomButton"
+@onready var plantButton = $"../PlantButton"
+
+
+@export var CarabaoScene : PackedScene
+
 
 var gridSize = 5
 var tileDict = {}
@@ -8,13 +16,18 @@ var rows = 11
 var cols = 20
 
 var tile : Vector2
+var carabaoSpawned : bool = false
+
+var mainCarabao : Node2D
 
 
 enum State {
 	SETUP, # 0
-	PLANTING, # 1
-	HARVESTING, # 2
-	GAMEOVER # 3
+	TILLING, # 1
+	CARABAO, # 2
+	PLANTING, # 3
+	HARVESTING, # 4
+	GAMEOVER # 5
 }
 
 var currentState = State.SETUP : set = set_state
@@ -53,7 +66,10 @@ func _process(_delta):
 func _input(event):
 	# Click to till
 	if event.is_action_pressed("Click"):
-		set_tile(tile, "tilled")
+		if currentState == State.TILLING:
+			set_tile(tile, "tilled")
+		elif currentState == State.CARABAO:
+			set_tile(tile, "carabao")
 	if event.is_action_pressed("RClick"):
 		set_tile(tile, "grass")
 
@@ -63,19 +79,56 @@ func set_tile(pos: Vector2, type: String):
 		
 	var tileObj = tileDict[str(pos)]
 	
-	if type == "tilled" and currentState == State.PLANTING: # till tile
+	if type == "tilled" and currentState == State.TILLING: # till tile
+		if tileObj.isOuter:
+			return
+			
 		tileObj.isTilled = true
 		set_cell(tilemapLayers["tilled"], pos, tilemapTiles["tilledTiles"], Vector2i(1, 1), 0)
+		check_tilled_dict()
+	
+	elif type == "carabao" and currentState == State.CARABAO: # put carabao
+		if not carabaoSpawned:
+			var carabao = CarabaoScene.instantiate()
+			mainCarabao = carabao
+			mainCarabao.position = map_to_local(tile)
+			
+			var root = get_tree().get_root()
+			var main = root.get_node("Main")
+			main.add_child(mainCarabao)
+			carabaoSpawned = true
+		else:
+			mainCarabao.position = map_to_local(tile)
+		
+		plantButton.disabled = false
+		
+		
 	elif type == "seed":
 		tileObj.isSeed = true
+		
 	elif type == "grow":
 		tileObj.isGrown = true
-	elif type == "grass" and currentState == State.PLANTING: # untill tile
+		
+	elif type == "grass" and currentState == State.TILLING: # untill tile
 		if tileObj.isTilled and not tileObj.isSeed:
 			erase_cell(tilemapLayers["tilled"], tile)
 			tileObj.isTilled = false
+			check_tilled_dict()
 	
 	print(tileObj)
+
+
+func check_tilled_dict():
+	var count = 0
+
+	for tileData in tileDict.values():
+		if tileData["isTilled"]:
+			count += 1
+
+	if count > 0:
+		carabaoButton.disabled = false
+	else:
+		carabaoButton.disabled = true
 
 
 func set_state(newState):
@@ -85,7 +138,31 @@ func set_state(newState):
 	currentState = newState
 	print("state changed: ", currentState)
 	
+	disable_button_on_state()
+	
 
+func disable_button_on_state():
+	match currentState:
+		State.SETUP:
+			#hoeButton.disabled = true
+			plantButton.disabled = true
+			carabaoButton.disabled = true
+			#randomButton.disabled = true
+			
+		State.TILLING:
+			if not carabaoSpawned:
+				carabaoButton.disabled = true
+			plantButton.disabled = true
+		
+		State.PLANTING:
+			hoeButton.disabled = true
+			plantButton.disabled = true
+			carabaoButton.disabled = true
+			randomButton.disabled = true
+			
+		State.CARABAO:
+			plantButton.disabled = true
+		
 
 func erase_hover_tiles():
 	for col in cols:
@@ -104,6 +181,9 @@ func erase_tile(layer: int, pos: Vector2):
 
 
 func hover_tile():
+	if currentState == State.SETUP or currentState == State.PLANTING:
+		return
+		
 	if tileDict.has(str(tile)):
 		var tileObj = tileDict[str(tile)]
 		if not tileObj.isSeed and not tileObj.isOuter:
@@ -122,6 +202,7 @@ func init_set_tile(pos: Vector2, atlas: Vector2i, isOuter: bool):
 
 
 func init():
+	disable_button_on_state()
 	for col in cols:
 		for row in rows:
 			if col == 0 or col == cols - 1\
@@ -174,4 +255,20 @@ func init():
 
 			init_set_tile(pos, atlas, isOuter)
 
+	#set_state(State.TILLING)
+
+
+func _on_plant_button_pressed():
 	set_state(State.PLANTING)
+
+
+func _on_hoe_button_pressed():
+	set_state(State.TILLING)
+
+
+func _on_carabao_button_pressed():
+	set_state(State.CARABAO)
+
+
+func _on_random_button_pressed():
+	pass
