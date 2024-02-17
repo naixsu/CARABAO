@@ -20,6 +20,8 @@ var carabaoSpawned : bool = false
 
 var mainCarabao : Node2D
 
+var randomTilledChance : float = 0.40
+
 
 enum State {
 	SETUP, # 0
@@ -27,7 +29,8 @@ enum State {
 	CARABAO, # 2
 	PLANTING, # 3
 	HARVESTING, # 4
-	GAMEOVER # 5
+	RANDOM, # 5
+	GAMEOVER # 6
 }
 
 var currentState = State.SETUP : set = set_state
@@ -59,7 +62,7 @@ func _ready():
 func _process(_delta):
 	tile = local_to_map(get_global_mouse_position())
 
-	erase_hover_tiles()
+	erase_layer_tiles(tilemapLayers["hover"])
 	hover_tile()
 
 
@@ -67,14 +70,15 @@ func _input(event):
 	# Click to till
 	if event.is_action_pressed("Click"):
 		if currentState == State.TILLING:
-			set_tile(tile, "tilled")
+			set_tile(tile, "tilled", false)
 		elif currentState == State.CARABAO:
-			set_tile(tile, "carabao")
+			set_tile(tile, "carabao", false)
 	if event.is_action_pressed("RClick"):
-		set_tile(tile, "grass")
+		set_tile(tile, "grass", false)
 
-func set_tile(pos: Vector2, type: String):
-	if not tileDict.has(str(tile)):
+
+func set_tile(pos: Vector2, type: String, random: bool):
+	if not random and not tileDict.has(str(tile)):
 		return
 		
 	var tileObj = tileDict[str(pos)]
@@ -89,14 +93,7 @@ func set_tile(pos: Vector2, type: String):
 	
 	elif type == "carabao" and currentState == State.CARABAO: # put carabao
 		if not carabaoSpawned:
-			var carabao = CarabaoScene.instantiate()
-			mainCarabao = carabao
-			mainCarabao.position = map_to_local(tile)
-			
-			var root = get_tree().get_root()
-			var main = root.get_node("Main")
-			main.add_child(mainCarabao)
-			carabaoSpawned = true
+			spawn_carabao(tile)
 		else:
 			mainCarabao.position = map_to_local(tile)
 		
@@ -116,6 +113,17 @@ func set_tile(pos: Vector2, type: String):
 			check_tilled_dict()
 	
 	print(tileObj)
+
+
+func spawn_carabao(pos: Vector2i):
+	var carabao = CarabaoScene.instantiate()
+	mainCarabao = carabao
+	mainCarabao.position = map_to_local(pos)
+	
+	var root = get_tree().get_root()
+	var main = root.get_node("Main")
+	main.add_child(mainCarabao)
+	carabaoSpawned = true
 
 
 func check_tilled_dict():
@@ -162,9 +170,47 @@ func disable_button_on_state():
 			
 		State.CARABAO:
 			plantButton.disabled = true
-		
 
-func erase_hover_tiles():
+		State.RANDOM:
+			hoeButton.disabled = false
+			plantButton.disabled = false
+			carabaoButton.disabled = false
+			randomButton.disabled = false
+
+			
+
+
+func clear_tiles():
+	# Clear all tilled tiles
+	erase_layer_tiles(tilemapLayers["tilled"])
+	
+	# Carabao process
+	carabaoSpawned = false
+	
+	while not carabaoSpawned:
+		var randomTile = tileDict.keys()[randi() % tileDict.size()]
+		
+		if not tileDict[str(randomTile)].isOuter:
+			#mainCarabao.position = map_to_local(Vector2())
+			randomTile = tileDict[str(randomTile)].pos
+			var coords = Vector2i(randomTile)
+			
+			if mainCarabao == null:
+				spawn_carabao(coords)
+			else:
+				mainCarabao.position = map_to_local(coords)
+				
+			carabaoSpawned = true
+	
+	# Set isTilled on all tiles to false
+	
+	for tileData in tileDict.values():
+		if tileData["isTilled"]:
+			tileData.isTilled = false
+			
+	# Random till
+	set_state(State.TILLING)
+	
 	for col in cols:
 		for row in rows:
 			if col == 0 or col == cols - 1\
@@ -173,7 +219,22 @@ func erase_hover_tiles():
 			
 			var pos = Vector2(col, row)
 			
-			erase_tile(1, pos)
+			if randf() < randomTilledChance:
+				set_tile(pos, "tilled", true)
+
+func randomize_tiles():
+	clear_tiles()
+
+func erase_layer_tiles(layer: int):
+	for col in cols:
+		for row in rows:
+			if col == 0 or col == cols - 1\
+			or row == 0 or row == rows - 1 or row == rows - 2:
+				continue
+			
+			var pos = Vector2(col, row)
+			
+			erase_tile(layer, pos)
 
 
 func erase_tile(layer: int, pos: Vector2):
@@ -187,7 +248,7 @@ func hover_tile():
 	if tileDict.has(str(tile)):
 		var tileObj = tileDict[str(tile)]
 		if not tileObj.isSeed and not tileObj.isOuter:
-			set_cell(1, tile, tilemapTiles["hover"], Vector2i(0, 0), 0)
+			set_cell(tilemapLayers["hover"], tile, tilemapTiles["hover"], Vector2i(0, 0), 0)
 
 
 func init_set_tile(pos: Vector2, atlas: Vector2i, isOuter: bool):
@@ -198,7 +259,7 @@ func init_set_tile(pos: Vector2, atlas: Vector2i, isOuter: bool):
 		"isGrown": false,
 		"isTilled": false
 	}
-	set_cell(0, pos, tilemapTiles["grassTiles"], atlas, 0)
+	set_cell(tilemapLayers["grass"], pos, tilemapTiles["grassTiles"], atlas, 0)
 
 
 func init():
@@ -271,4 +332,5 @@ func _on_carabao_button_pressed():
 
 
 func _on_random_button_pressed():
-	pass
+	set_state(State.RANDOM)
+	randomize_tiles()
