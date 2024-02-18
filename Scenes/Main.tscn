@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://csjhvyusgnjka"]
+[gd_scene load_steps=29 format=3 uid="uid://csjhvyusgnjka"]
 
 [ext_resource type="Script" path="res://Scripts/TileMap.gd" id="1_m65e4"]
 [ext_resource type="Texture2D" uid="uid://bdwf4xtvp787e" path="res://Assets/Tiles/Grass Tile.png" id="1_nu5bm"]
@@ -18,6 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://d3j60vl6mq5k1" path="res://Scenes/Carabao.tscn" id="14_b15w6"]
 [ext_resource type="Texture2D" uid="uid://dsp5k6fvlf5qt" path="res://Assets/UI/cancel.png" id="16_rdn6g"]
 [ext_resource type="FontFile" uid="uid://da8ve8i1xffv2" path="res://Assets/Fonts/rainyhearts.ttf" id="18_38m53"]
+[ext_resource type="PackedScene" uid="uid://b33ycxvdm4dpg" path="res://Scenes/Analyzer.tscn" id="19_xkit5"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gri84"]
 texture = ExtResource("1_nu5bm")
@@ -217,6 +218,8 @@ offset_bottom = 176.0
 texture = ExtResource("4_g47nv")
 expand_mode = 1
 
+[node name="Analyzer" parent="." instance=ExtResource("19_xkit5")]
+
 [node name="TileMap" type="TileMap" parent="."]
 texture_filter = 1
 tile_set = SubResource("TileSet_v2age")
@@ -329,6 +332,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="BG" type="TextureRect" parent="End/Modal"]
 modulate = Color(0, 0, 0, 0.27451)

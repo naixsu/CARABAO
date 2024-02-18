@@ -33,10 +33,12 @@ volume_db = -5.66
 [node name="MainMenu" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_a5ky7")
 volume_db = -15.0
+bus = &"BGM"
 
 [node name="MainGame" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_oc2nv")
 volume_db = -10.0
+bus = &"BGM"
 
 [node name="HarvestSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_3f3ca")
