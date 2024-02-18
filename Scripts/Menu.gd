@@ -54,6 +54,7 @@ func _on_fact_button_pressed():
 
 func _on_qui_button_pressed():
 	AudioManager.play_sound("clickSound")
+	await get_tree().create_timer(0.2).timeout
 	get_tree().quit()
 
 

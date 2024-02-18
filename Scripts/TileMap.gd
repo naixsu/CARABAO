@@ -115,12 +115,14 @@ func _input(event):
 	if event.is_action_pressed("Click"):
 		if currentState == State.TILLING:
 			set_tile(tile, "tilled", true, 0)
+			AudioManager.play_sound("tillSound")
 			print("Tilled tile at: ", str(tile))
 		elif currentState == State.CARABAO:
 			set_tile(tile, "carabao", true, 0)
 			
 	if event.is_action_pressed("RClick"):
 		set_tile(tile, "grass", true, 0)
+		AudioManager.play_sound("tillSound")
 
 
 func set_tile(pos: Vector2, type: String, click: bool, phase: int):

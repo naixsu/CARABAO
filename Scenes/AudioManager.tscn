@@ -1,10 +1,33 @@
-[gd_scene load_steps=3 format=3 uid="uid://legjpl3yd68r"]
+[gd_scene load_steps=7 format=3 uid="uid://legjpl3yd68r"]
 
 [ext_resource type="Script" path="res://Scripts/AudioManager.gd" id="1_amvtu"]
 [ext_resource type="AudioStream" uid="uid://c17ltsgq13dpv" path="res://Assets/Audio/Click.mp3" id="2_1yaxb"]
+[ext_resource type="AudioStream" uid="uid://b7sta3i7kdaop" path="res://Assets/Audio/Till1.ogg" id="3_ir5bt"]
+[ext_resource type="AudioStream" uid="uid://b4qvplml3d10c" path="res://Assets/Audio/Till2.ogg" id="4_lx2ey"]
+[ext_resource type="AudioStream" uid="uid://b1kv8l1iyuc35" path="res://Assets/Audio/Till3.ogg" id="5_026an"]
+[ext_resource type="AudioStream" uid="uid://b2xx81cbgjpmp" path="res://Assets/Audio/Till4.ogg" id="6_3kpp4"]
 
 [node name="AudioManager" type="Node"]
 script = ExtResource("1_amvtu")
 
 [node name="ClickSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_1yaxb")
+volume_db = -5.66
+
+[node name="TillSounds" type="Node" parent="."]
+
+[node name="Till1" type="AudioStreamPlayer" parent="TillSounds"]
+stream = ExtResource("3_ir5bt")
+volume_db = -7.075
+
+[node name="Till2" type="AudioStreamPlayer" parent="TillSounds"]
+stream = ExtResource("4_lx2ey")
+volume_db = -8.78
+
+[node name="Till3" type="AudioStreamPlayer" parent="TillSounds"]
+stream = ExtResource("5_026an")
+volume_db = -5.0
+
+[node name="Till4" type="AudioStreamPlayer" parent="TillSounds"]
+stream = ExtResource("6_3kpp4")
+volume_db = -5.0
