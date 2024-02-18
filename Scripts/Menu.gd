@@ -42,19 +42,23 @@ func play_game():
 	self.hide()
 
 func _on_play_button_pressed():
+	AudioManager.play_sound("clickSound")
 	play_game()
 
 
 func _on_fact_button_pressed():
+	AudioManager.play_sound("clickSound")
 	menuNode.hide() 
 	factNode.show()
 
 
 func _on_qui_button_pressed():
+	AudioManager.play_sound("clickSound")
 	get_tree().quit()
 
 
 func _on_back_button_pressed():
+	AudioManager.play_sound("clickSound")
 	pageNumber -= 1
 	if pageNumber < 0:
 		pageNumber = maxPageNumber - 1
@@ -62,6 +66,7 @@ func _on_back_button_pressed():
 
 
 func _on_next_button_pressed():
+	AudioManager.play_sound("clickSound")
 	pageNumber += 1
 	if pageNumber > maxPageNumber - 1:
 		pageNumber = 0
@@ -69,5 +74,6 @@ func _on_next_button_pressed():
 
 
 func _on_menu_button_pressed():
+	AudioManager.play_sound("clickSound")
 	factNode.hide()
 	menuNode.show()

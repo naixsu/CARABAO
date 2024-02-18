@@ -690,23 +690,28 @@ func init():
 
 
 func _on_plant_button_pressed():
+	AudioManager.play_sound("clickSound")
 	set_state(State.PLANTING)
 	plant_tiles()
 
 
 func _on_hoe_button_pressed():
+	AudioManager.play_sound("clickSound")
 	set_state(State.TILLING)
 
 
 func _on_carabao_button_pressed():
+	AudioManager.play_sound("clickSound")
 	set_state(State.CARABAO)
 
 
 func _on_random_button_pressed():
+	AudioManager.play_sound("clickSound")
 	set_state(State.RANDOM)
 	randomize_tiles()
 
 
 func _on_cancel_button_pressed():
+	AudioManager.play_sound("clickSound")
 	set_state(State.TILLING)
 	clear_tiles()
