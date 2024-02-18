@@ -42,6 +42,9 @@ func _process(_delta):
 	if reformed == targetPos or\
 		reformed.x - 1 == targetPos.x or reformed.x + 1 == targetPos.x or\
 		reformed.y - 1 == targetPos.y or reformed.y + 1 == targetPos.y:
+	
+	#if reformed == targetPos or \
+	#is_point_close_enough(position, targetPos, 0.2):
 			
 			velocity = Vector2.ZERO
 			stop_moving.emit()
@@ -51,6 +54,8 @@ func _process(_delta):
 		
 	move_and_slide()
 
+func is_point_close_enough(point: Vector2, target: Vector2, margin: float) -> bool:
+	return abs(point.x - target.x) <= margin and abs(point.y - target.y) <= margin
 
 func go_towards_target_point(currentAgentPosition, nextPathPosition):
 	moving = true

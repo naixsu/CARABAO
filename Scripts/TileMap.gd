@@ -5,6 +5,10 @@ extends TileMap
 @onready var randomButton = $"../RandomButton"
 @onready var plantButton = $"../PlantButton"
 @onready var seedTiles = $"../SeedTiles"
+@onready var tilledCountLabel = $"../TilledCount"
+@onready var grownCountLabel = $"../GrownCount"
+@onready var harvestCountLabel = $"../HarvestCount"
+
 
 
 @export var CarabaoScene : PackedScene
@@ -20,8 +24,8 @@ var radius = 0
 var tilledCount = 0
 var grownCount = 0
 var harvestCount = 0
-var lookTime = .3
-var seedTimer = 3
+@export var lookTime = .5
+@export var seedTimer = 3
 
 var rows = 11
 var cols = 20
@@ -91,6 +95,10 @@ func _process(_delta):
 	erase_layer_tiles(tilemapLayers["hover"])
 	hover_tile()
 	
+	tilledCountLabel.text = str(tilledCount)
+	grownCountLabel.text = str(grownCount)
+	harvestCountLabel.text = str(harvestCount)
+	
 	#if currentState == State.PATROLLING:
 		#await get_tree().create_timer(2).timeout
 		#if not isPatrolling:
@@ -110,6 +118,7 @@ func _input(event):
 			print("Tilled tile at: ", str(tile))
 		elif currentState == State.CARABAO:
 			set_tile(tile, "carabao", true, 0)
+			
 	if event.is_action_pressed("RClick"):
 		set_tile(tile, "grass", true, 0)
 
@@ -215,21 +224,24 @@ func stop_moving():
 		##patrol()
 		##return
 	
-	if currentState == State.HARVESTING:
-		grownCount -= 1
-		harvestCount += 1
-		print("HARVESTED AT: ", str(t))
-		mainCarabao.pos = t
-		move_carabao(t)
-		newTileDict[str(t)].isHarvested = true
-		newTileDict[str(t)].isSeed = false
-		erase_tile(tilemapLayers["plant"], t)
-		look_for_tiles()
+	#if currentState == State.HARVESTING:
+		#grownCount -= 1
+		#harvestCount += 1
+		#print("HARVESTED AT: ", str(t))
+		#radius = 0
+		#overlayTiles = []
+		#newOverlayTiles = []
+		#mainCarabao.pos = t
+		#move_carabao(t)
+		#newTileDict[str(t)].isHarvested = true
+		#newTileDict[str(t)].isSeed = false
+		#erase_tile(tilemapLayers["plant"], t)
+		#look_for_tiles()
 		
 	
 	# This is where seed is planted
 	if newTileDict[str(t)].isTilled and not newTileDict[str(t)].isSeed and not\
-	newTileDict[str(t)].isHarvested:
+	newTileDict[str(t)].isHarvested and not newTileDict[str(t)].isGrown:
 		print("Planting tile: ", t)
 		set_tile(t, "plant", false, 1)
 		newTileDict[str(t)].isSeed = true
@@ -243,13 +255,56 @@ func stop_moving():
 		mainCarabao.pos = t
 		move_carabao(t)
 		tilledCount -= 1
-		look_for_tiles()
+		radius = 0
+		overlayTiles = []
+		newOverlayTiles = []
+		if tilledCount > 0:
+			set_state(State.LOOKING)
+			look_for_tiles()
+		elif tilledCount == 0:
+			set_state(State.HARVESTING)
+			look_for_tiles()
+
+	# Harvest
+	elif newTileDict[str(t)].isGrown and not newTileDict[str(t)].isHarvested and tilledCount == 0:
+		set_state(State.HARVESTING)
+		print("Harvest tile: ", t)
+		mainCarabao.pos = t
+		move_carabao(t)
+		erase_tile(tilemapLayers["plant"], t)
+		newTileDict[str(t)].isHarvested = true
+		newTileDict[str(t)].isGrown = false
+		newTileDict[str(t)].isSeed = false
+		harvestCount += 1
+		grownCount -= 1
+		radius = 0
+		overlayTiles = []
+		newOverlayTiles = []
+		
+		if tilledCount == 0 and grownCount > 0:
+			set_state(State.LOOKING)
+			look_for_tiles()
+			
+		elif tilledCount == 0 and grownCount == 0:
+			set_state(State.GAMEOVER)
+			end_game()
+
+
+func end_game():
+	print("End Game")
+	radius = 0
+	overlayTiles = []
+	newOverlayTiles = []
+	erase_layer_tiles(tilemapLayers["overlay"])
 
 
 func move_to(t: Vector2i):
 	#print("moving to, ", str(t))
-	if currentState != State.HARVESTING:
-		set_state(State.MOVING)
+	#radius = 0
+	#overlayTiles = []
+	#newOverlayTiles = []
+	#if currentState != State.HARVESTING:
+	set_state(State.MOVING)
 	# move carabao from mainCarabao.pos to t
 	var targetPosition = map_to_local(t)
 	#print(targetPosition)
@@ -269,30 +324,47 @@ func check_for_tilled():
 	for t in overlayTiles:
 		if currentState == State.LOOKING:
 			if newTileDict[str(t)].isTilled and not newTileDict[str(t)].isSeed and not\
-			newTileDict[str(t)].isHarvested:
-				radius = 0
-				overlayTiles = []
-				newOverlayTiles = []
+			newTileDict[str(t)].isHarvested and not newTileDict[str(t)].isGrown:
+				#radius = 0
+				#overlayTiles = []
+				#newOverlayTiles = []
+				move_to(t)
+				
+			elif newTileDict[str(t)].isGrown and tilledCount == 0:
 				move_to(t)
 			
-			elif newTileDict[str(t)].isTilled and newTileDict[str(t)].isGrown and not\
-			newTileDict[str(t)].isHarvested:
-				print("SEED FOUND AT: ", str(t))
-				set_state(State.HARVESTING)
-				radius = 0
-				overlayTiles = []
-				newOverlayTiles = []
-				move_to(t)
-
+			#elif newTileDict[str(t)].isTilled and newTileDict[str(t)].isGrown and not\
+			#newTileDict[str(t)].isHarvested:
+				#print("SEED FOUND AT: ", str(t))
+				#set_state(State.HARVESTING)
+				#radius = 0
+				#overlayTiles = []
+				#newOverlayTiles = []
+				#move_to(t)
+				
+	
 func look_for_tiles():
-	if tilledCount == 0 and grownCount == 0:
-		erase_layer_tiles(tilemapLayers["overlay"])
-		return
+	#overlayTiles = []
+	#newOverlayTiles = []
+	#if currentState == State.MOVING:
+		#print("MOVING")
+		#radius = 0
+		#overlayTiles = []
+		#newOverlayTiles = []
+		#erase_layer_tiles(tilemapLayers["overlay"])
+		#return
+		
+	#if tilledCount == 0:
+		#radius = 0
+		#overlayTiles = []
+		#newOverlayTiles = []
+		#erase_layer_tiles(tilemapLayers["overlay"])
+		#return
 	
 			
-	if grownCount > 0 and currentState != State.HARVESTING:
-		#print("Harvesting")
-		set_state(State.HARVESTING)
+	#if grownCount > 0 and currentState != State.HARVESTING:
+		##print("Harvesting")
+		#set_state(State.HARVESTING)
 	#else:
 		#print("Patrolling")
 		#set_state(State.PATROLLING)
@@ -304,7 +376,7 @@ func look_for_tiles():
 	erase_layer_tiles(tilemapLayers["overlay"])
 	
 	
-	set_tile(mainCarabao.pos, "overlay", false, 0)
+	#set_tile(mainCarabao.pos, "overlay", false, 0)
 	
 	if radius == 1:
 		overlayTiles.append(mainCarabao.pos)
@@ -314,6 +386,7 @@ func look_for_tiles():
 		return
 		
 	newOverlayTiles = []
+	
 	
 	for tilePos in overlayTiles:
 		#print(tilePos)
@@ -336,15 +409,30 @@ func look_for_tiles():
 					continue
 			if neighbor not in newOverlayTiles:
 				newOverlayTiles.append(neighbor)
-				set_tile(neighbor, "overlay", false, 0)
+				#set_tile(neighbor, "overlay", false, 0)
 	
 	#print(newOverlayTiles)
+	newOverlayTiles = array_unique(newOverlayTiles)
+	
+	for neighbor in newOverlayTiles:
+		set_tile(neighbor, "overlay", false, 0)
+		
 	overlayTiles = newOverlayTiles
 	check_for_tilled()
 	
 	if currentState == State.LOOKING:
+		print("Looking")
 		look_for_tiles()
 
+
+func array_unique(array: Array) -> Array:
+	var unique: Array = []
+
+	for item in array:
+		if not unique.has(item):
+			unique.append(item)
+
+	return unique
 
 func move_carabao(pos: Vector2i):
 	if not carabaoSpawned:

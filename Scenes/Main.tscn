@@ -286,6 +286,20 @@ texture = ExtResource("16_rdn6g")
 
 [node name="SeedTiles" type="Node2D" parent="."]
 
+[node name="TilledCount" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="GrownCount" type="Label" parent="."]
+offset_left = 46.0
+offset_right = 86.0
+offset_bottom = 23.0
+
+[node name="HarvestCount" type="Label" parent="."]
+offset_left = 89.0
+offset_right = 129.0
+offset_bottom = 23.0
+
 [connection signal="pressed" from="HoeButton" to="TileMap" method="_on_hoe_button_pressed"]
 [connection signal="pressed" from="CarabaoButton" to="TileMap" method="_on_carabao_button_pressed"]
 [connection signal="pressed" from="PlantButton" to="TileMap" method="_on_plant_button_pressed"]
