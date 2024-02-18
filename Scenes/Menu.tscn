@@ -96,7 +96,6 @@ texture = ExtResource("1_gtbmu")
 expand_mode = 1
 
 [node name="MenuNode" type="Control" parent="."]
-visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -122,13 +121,15 @@ text = "CARABAO"
 position = Vector2(54, 124)
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_3f0mn")
-frame_progress = 0.959764
+frame = 1
+frame_progress = 0.1291
 
 [node name="CB2" type="AnimatedSprite2D" parent="MenuNode"]
 position = Vector2(266, 124)
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_dk8oh")
-frame_progress = 0.892719
+frame = 1
+frame_progress = 0.660605
 flip_h = true
 
 [node name="PlayButton" type="Button" parent="MenuNode"]
@@ -183,6 +184,7 @@ theme_override_fonts/font = ExtResource("9_01xle")
 text = "Quit"
 
 [node name="FactNode" type="Control" parent="."]
+visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
