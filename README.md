@@ -28,7 +28,8 @@
 
 
 ### NOTES
-- Assets were mostly mine, with some taken from royalty-free sources. Though, the [Minecraft](https://www.minecraft.net/en-us) sounds were taken from their actual assets. ~~I did buy the game though and just used the assets in the .minecraft/assets folder, so it's not entirely stealing copege~~
+- Assets were mostly mine, with some taken from royalty-free sources. Though, the [Minecraft](https://www.minecraft.net/en-us) sounds were taken from their actual assets. ~~I did buy the game though and just used the assets in the .minecraft/assets folder, so it's not entirely stealing copege,~~
 - While the main subject of this game is a carabao, I decided to use cow sounds instead, because it sounded tamer than a carabao's.
 - Main idea of this game is [FARM](https://github.com/naixsu/FARM).
 - Made this game in ~20 hours total lule.
+- Ofc classic spaghetti and unoptimized code
