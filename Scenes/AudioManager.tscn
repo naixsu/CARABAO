@@ -88,7 +88,7 @@ volume_db = -10.0
 
 [node name="Cow1" type="AudioStreamPlayer" parent="CowSounds"]
 stream = ExtResource("13_lpmrj")
-volume_db = -5.0
+volume_db = -1.0
 
 [node name="Cow2" type="AudioStreamPlayer" parent="CowSounds"]
 stream = ExtResource("14_w2ssw")
@@ -96,7 +96,7 @@ volume_db = -10.0
 
 [node name="Cow3" type="AudioStreamPlayer" parent="CowSounds"]
 stream = ExtResource("15_nkgyw")
-volume_db = -10.0
+volume_db = -20.0
 
 [node name="Cow4" type="AudioStreamPlayer" parent="CowSounds"]
 stream = ExtResource("16_o3flh")

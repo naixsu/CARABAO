@@ -545,6 +545,10 @@ func clear_tiles():
 	# Clear all tilled tiles
 	erase_layer_tiles(tilemapLayers["tilled"])
 	erase_layer_tiles(tilemapLayers["plant"])
+	radius = 0
+	overlayTiles = []
+	newOverlayTiles = []
+	erase_layer_tiles(tilemapLayers["overlay"])
 	
 
 	for child in seedTiles.get_children():
