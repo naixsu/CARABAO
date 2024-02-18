@@ -15,6 +15,7 @@ script = ExtResource("1_ljhf4")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_m1kr1")
+layout_mode = 0
 offset_right = 320.0
 offset_bottom = 176.0
 mouse_filter = 2
