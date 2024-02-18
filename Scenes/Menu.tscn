@@ -1,0 +1,448 @@
+[gd_scene load_steps=22 format=3 uid="uid://cmkjwmjo3vi1o"]
+
+[ext_resource type="Script" path="res://Scripts/Menu.gd" id="1_1y7qs"]
+[ext_resource type="Texture2D" uid="uid://beesme6xwchok" path="res://Assets/UI/background.png" id="1_gtbmu"]
+[ext_resource type="Texture2D" uid="uid://c6xgiclrq5ee" path="res://Assets/Carabao/cb1.png" id="3_qknyd"]
+[ext_resource type="FontFile" uid="uid://du5wg627h76k3" path="res://Assets/Fonts/Ac437_IBM_EGA_8x8.ttf" id="3_toadu"]
+[ext_resource type="Texture2D" uid="uid://dpqwseqb0d5tx" path="res://Assets/Carabao/cb2.png" id="4_0xync"]
+[ext_resource type="Texture2D" uid="uid://sovg3at4uicg" path="res://Assets/Carabao/cb3.png" id="6_vyyxf"]
+[ext_resource type="Texture2D" uid="uid://b7yqlc7b3kwhx" path="res://Assets/Carabao/cb4.png" id="7_pbfvv"]
+[ext_resource type="Texture2D" uid="uid://dpriabveohfe5" path="res://Assets/Carabao/cb5.png" id="8_7mv4m"]
+[ext_resource type="Theme" uid="uid://bfd857okf6esm" path="res://Assets/UI/buttonTheme.tres" id="8_xyr7i"]
+[ext_resource type="FontFile" uid="uid://da8ve8i1xffv2" path="res://Assets/Fonts/rainyhearts.ttf" id="9_01xle"]
+[ext_resource type="Texture2D" uid="uid://by535krorjm7w" path="res://Assets/UI/Canvas.png" id="10_b5din"]
+[ext_resource type="Texture2D" uid="uid://b1fjugyf0a5dv" path="res://Assets/UI/arrow.png" id="11_j4nlx"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f6y1j"]
+atlas = ExtResource("4_0xync")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qqaof"]
+atlas = ExtResource("6_vyyxf")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_3f0mn"]
+animations = [{
+"frames": [{
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_f6y1j")
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_qqaof")
+}],
+"loop": true,
+"name": &"default",
+"speed": 3.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xu6ds"]
+atlas = ExtResource("7_pbfvv")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1ytxe"]
+atlas = ExtResource("8_7mv4m")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dk8oh"]
+animations = [{
+"frames": [{
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_xu6ds")
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_1ytxe")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cjyje"]
+atlas = ExtResource("3_qknyd")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0ftlh"]
+atlas = ExtResource("6_vyyxf")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vwn2m"]
+animations = [{
+"frames": [{
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_cjyje")
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_0ftlh")
+}],
+"loop": true,
+"name": &"default",
+"speed": 3.0
+}]
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1y7qs")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 320.0
+offset_bottom = 176.0
+texture = ExtResource("1_gtbmu")
+expand_mode = 1
+
+[node name="MenuNode" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="MenuNode"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 35.0
+offset_top = 3.0
+offset_right = 245.0
+offset_bottom = 43.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("3_toadu")
+theme_override_font_sizes/font_size = 40
+text = "CARABAO"
+
+[node name="CB1" type="AnimatedSprite2D" parent="MenuNode"]
+position = Vector2(54, 124)
+scale = Vector2(4, 4)
+sprite_frames = SubResource("SpriteFrames_3f0mn")
+frame = 1
+frame_progress = 0.1291
+
+[node name="CB2" type="AnimatedSprite2D" parent="MenuNode"]
+position = Vector2(266, 124)
+scale = Vector2(4, 4)
+sprite_frames = SubResource("SpriteFrames_dk8oh")
+frame = 1
+frame_progress = 0.660605
+flip_h = true
+
+[node name="PlayButton" type="Button" parent="MenuNode"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 107.0
+offset_top = 56.0
+offset_right = 175.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("8_xyr7i")
+theme_override_fonts/font = ExtResource("9_01xle")
+text = "Play"
+
+[node name="FactButton" type="Button" parent="MenuNode"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 105.5
+offset_top = 87.0
+offset_right = 174.5
+offset_bottom = 111.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("8_xyr7i")
+theme_override_fonts/font = ExtResource("9_01xle")
+text = "Facts"
+
+[node name="QuiButton" type="Button" parent="MenuNode"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 105.5
+offset_top = 118.0
+offset_right = 174.5
+offset_bottom = 142.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("8_xyr7i")
+theme_override_fonts/font = ExtResource("9_01xle")
+text = "Quit"
+
+[node name="FactNode" type="Control" parent="."]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Page" type="Control" parent="FactNode"]
+layout_mode = 1
+anchor_right = 8.0
+anchor_bottom = 4.4
+
+[node name="TextureRect" type="TextureRect" parent="FactNode/Page"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -76.0
+offset_top = -82.0
+offset_right = 76.0
+offset_bottom = 82.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("10_b5din")
+
+[node name="Pages" type="Control" parent="FactNode/Page"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="0" type="TextEdit" parent="FactNode/Page/Pages"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 76.5
+offset_top = -1.0
+offset_right = 203.5
+offset_bottom = 137.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("9_01xle")
+text = "Known as the Pinoy farmer’s best buddy in the rice field."
+editable = false
+context_menu_enabled = false
+shortcut_keys_enabled = false
+selecting_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+virtual_keyboard_enabled = false
+middle_mouse_paste_enabled = false
+wrap_mode = 1
+
+[node name="1" type="TextEdit" parent="FactNode/Page/Pages"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 76.5
+offset_top = -1.0
+offset_right = 203.5
+offset_bottom = 137.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("9_01xle")
+text = "In Tagalog, it translates to kalabaw, which is derived from Spanish. A caraballa is the term given to a female carabao."
+editable = false
+context_menu_enabled = false
+shortcut_keys_enabled = false
+selecting_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+virtual_keyboard_enabled = false
+middle_mouse_paste_enabled = false
+wrap_mode = 1
+
+[node name="2" type="TextEdit" parent="FactNode/Page/Pages"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 76.5
+offset_top = -1.0
+offset_right = 203.5
+offset_bottom = 137.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("9_01xle")
+text = "Having the low, broad, and heavy build of draught species, carabaos range in different hues from light grey to slate grey."
+editable = false
+context_menu_enabled = false
+shortcut_keys_enabled = false
+selecting_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+virtual_keyboard_enabled = false
+middle_mouse_paste_enabled = false
+wrap_mode = 1
+
+[node name="3" type="TextEdit" parent="FactNode/Page/Pages"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 76.5
+offset_top = -1.0
+offset_right = 203.5
+offset_bottom = 137.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("9_01xle")
+text = "They live an average lifespan of 18 to 20 years. Females give birth to one calf annually."
+editable = false
+context_menu_enabled = false
+shortcut_keys_enabled = false
+selecting_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+virtual_keyboard_enabled = false
+middle_mouse_paste_enabled = false
+wrap_mode = 1
+
+[node name="4" type="TextEdit" parent="FactNode/Page/Pages"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 76.5
+offset_top = -1.0
+offset_right = 203.5
+offset_bottom = 137.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("9_01xle")
+text = "They are widely scattered in the larger islands of the Philippines. Their skin, called hide, was once used to make a number of products, even the armor of pre colonial Philippine warriors."
+editable = false
+context_menu_enabled = false
+shortcut_keys_enabled = false
+selecting_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+virtual_keyboard_enabled = false
+middle_mouse_paste_enabled = false
+wrap_mode = 1
+
+[node name="5" type="TextEdit" parent="FactNode/Page/Pages"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 76.5
+offset_top = -1.0
+offset_right = 203.5
+offset_bottom = 137.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("9_01xle")
+text = "Carabao racing is a famous sport among farmers and carabao fanatics in the Philippines - equipped with their carts on their back, sprint together with their farmers to win prizes."
+editable = false
+context_menu_enabled = false
+shortcut_keys_enabled = false
+selecting_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+virtual_keyboard_enabled = false
+middle_mouse_paste_enabled = false
+wrap_mode = 1
+
+[node name="6" type="TextEdit" parent="FactNode/Page/Pages"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 76.5
+offset_top = -1.0
+offset_right = 203.5
+offset_bottom = 137.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("9_01xle")
+text = "While the carabao has not received the same official recognition as The Philippine Eagle – officially declared the national bird in 1995 – the water buffalo’s significance was signed into law two decades ago by the Philippine Carabao Act of 1992. "
+editable = false
+context_menu_enabled = false
+shortcut_keys_enabled = false
+selecting_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+virtual_keyboard_enabled = false
+middle_mouse_paste_enabled = false
+wrap_mode = 1
+
+[node name="BackButton" type="Button" parent="FactNode"]
+layout_mode = 0
+offset_left = 57.0
+offset_top = 18.0
+offset_right = 82.0
+offset_bottom = 39.0
+theme = ExtResource("8_xyr7i")
+theme_override_fonts/font = ExtResource("9_01xle")
+
+[node name="Sprite2D" type="Sprite2D" parent="FactNode/BackButton"]
+position = Vector2(12.5, 10)
+scale = Vector2(1.0625, 1)
+texture = ExtResource("11_j4nlx")
+flip_h = true
+
+[node name="NextButton" type="Button" parent="FactNode"]
+layout_mode = 0
+offset_left = 238.0
+offset_top = 17.0
+offset_right = 263.0
+offset_bottom = 38.0
+theme = ExtResource("8_xyr7i")
+theme_override_fonts/font = ExtResource("9_01xle")
+
+[node name="Sprite2D2" type="Sprite2D" parent="FactNode/NextButton"]
+position = Vector2(12.5, 10)
+scale = Vector2(1.0625, 1)
+texture = ExtResource("11_j4nlx")
+
+[node name="MenuButton" type="Button" parent="FactNode"]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 18.0
+offset_right = 41.0
+offset_bottom = 39.0
+theme = ExtResource("8_xyr7i")
+theme_override_fonts/font = ExtResource("9_01xle")
+text = "Menu"
+
+[node name="CB3" type="AnimatedSprite2D" parent="FactNode"]
+position = Vector2(48, 137)
+scale = Vector2(3, 3)
+sprite_frames = SubResource("SpriteFrames_vwn2m")
+
+[connection signal="pressed" from="MenuNode/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="MenuNode/FactButton" to="." method="_on_fact_button_pressed"]
+[connection signal="pressed" from="MenuNode/QuiButton" to="." method="_on_qui_button_pressed"]
+[connection signal="pressed" from="FactNode/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="FactNode/NextButton" to="." method="_on_next_button_pressed"]
+[connection signal="pressed" from="FactNode/MenuButton" to="." method="_on_menu_button_pressed"]
