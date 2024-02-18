@@ -1,0 +1,198 @@
+[gd_scene load_steps=14 format=3 uid="uid://csjhvyusgnjka"]
+
+[ext_resource type="Script" path="res://Scripts/TileMap.gd" id="1_m65e4"]
+[ext_resource type="Texture2D" uid="uid://bdwf4xtvp787e" path="res://Assets/Tiles/Grass Tile.png" id="1_nu5bm"]
+[ext_resource type="Texture2D" uid="uid://bojwi5gk6aoi3" path="res://Assets/Tiles/Cursor.png" id="2_s64sc"]
+[ext_resource type="Texture2D" uid="uid://bx18ng65ew533" path="res://Assets/Tiles/Tilled Tile.png" id="4_647si"]
+[ext_resource type="Texture2D" uid="uid://beesme6xwchok" path="res://Assets/UI/background.png" id="4_g47nv"]
+[ext_resource type="Texture2D" uid="uid://3ycftx5xq8ew" path="res://Assets/External/Sprout Lands - Sprites - Basic pack/Tilesets/Grass.png" id="5_cjc4v"]
+[ext_resource type="Texture2D" uid="uid://d3m2cevkns2pa" path="res://Assets/External/Sprout Lands - Sprites - Basic pack/Tilesets/Tilled_Dirt.png" id="6_h73ne"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gri84"]
+texture = ExtResource("1_nu5bm")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5b28i"]
+texture = ExtResource("2_s64sc")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_i0u3j"]
+texture = ExtResource("4_647si")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hc85d"]
+texture = ExtResource("5_cjc4v")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+8:0/0 = 0
+9:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+8:1/0 = 0
+9:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+8:2/0 = 0
+9:2/0 = 0
+10:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+5:3/0 = 0
+6:3/0 = 0
+7:3/0 = 0
+8:3/0 = 0
+9:3/0 = 0
+10:3/0 = 0
+0:4/0 = 0
+1:4/0 = 0
+2:4/0 = 0
+3:4/0 = 0
+4:4/0 = 0
+5:4/0 = 0
+6:4/0 = 0
+7:4/0 = 0
+8:4/0 = 0
+9:4/0 = 0
+0:5/0 = 0
+1:5/0 = 0
+2:5/0 = 0
+3:5/0 = 0
+4:5/0 = 0
+5:5/0 = 0
+6:5/0 = 0
+7:5/0 = 0
+8:5/0 = 0
+9:5/0 = 0
+0:6/0 = 0
+1:6/0 = 0
+2:6/0 = 0
+3:6/0 = 0
+4:6/0 = 0
+5:6/0 = 0
+6:6/0 = 0
+7:6/0 = 0
+8:6/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_oofjp"]
+texture = ExtResource("6_h73ne")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+8:0/0 = 0
+9:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+8:1/0 = 0
+9:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+8:2/0 = 0
+9:2/0 = 0
+10:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+5:3/0 = 0
+6:3/0 = 0
+7:3/0 = 0
+8:3/0 = 0
+9:3/0 = 0
+10:3/0 = 0
+0:4/0 = 0
+1:4/0 = 0
+2:4/0 = 0
+3:4/0 = 0
+4:4/0 = 0
+5:4/0 = 0
+6:4/0 = 0
+7:4/0 = 0
+8:4/0 = 0
+0:5/0 = 0
+1:5/0 = 0
+2:5/0 = 0
+3:5/0 = 0
+4:5/0 = 0
+5:5/0 = 0
+6:5/0 = 0
+7:5/0 = 0
+8:5/0 = 0
+9:5/0 = 0
+0:6/0 = 0
+1:6/0 = 0
+2:6/0 = 0
+3:6/0 = 0
+4:6/0 = 0
+5:6/0 = 0
+6:6/0 = 0
+8:6/0 = 0
+9:6/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_v2age"]
+sources/0 = SubResource("TileSetAtlasSource_gri84")
+sources/1 = SubResource("TileSetAtlasSource_5b28i")
+sources/2 = SubResource("TileSetAtlasSource_i0u3j")
+sources/3 = SubResource("TileSetAtlasSource_hc85d")
+sources/4 = SubResource("TileSetAtlasSource_oofjp")
+
+[node name="Main" type="Node2D"]
+
+[node name="Background" type="TextureRect" parent="."]
+offset_right = 320.0
+offset_bottom = 176.0
+texture = ExtResource("4_g47nv")
+expand_mode = 1
+
+[node name="TileMap" type="TileMap" parent="."]
+texture_filter = 1
+tile_set = SubResource("TileSet_v2age")
+format = 2
+layer_1/tile_data = PackedInt32Array()
+script = ExtResource("1_m65e4")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+offset_top = 154.0
+offset_right = 320.0
+offset_bottom = 175.0
+
+[node name="TextureButton" type="TextureButton" parent="HBoxContainer"]
+layout_mode = 2

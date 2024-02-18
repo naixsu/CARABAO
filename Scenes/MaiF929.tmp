@@ -1,0 +1,39 @@
+[gd_scene load_steps=10 format=3 uid="uid://csjhvyusgnjka"]
+
+[ext_resource type="Script" path="res://Scripts/TileMap.gd" id="1_m65e4"]
+[ext_resource type="Texture2D" uid="uid://bdwf4xtvp787e" path="res://Assets/Tiles/Grass Tile.png" id="1_nu5bm"]
+[ext_resource type="Texture2D" uid="uid://bojwi5gk6aoi3" path="res://Assets/Tiles/Cursor.png" id="2_s64sc"]
+[ext_resource type="Texture2D" uid="uid://bx18ng65ew533" path="res://Assets/Tiles/Tilled Tile.png" id="4_647si"]
+[ext_resource type="Texture2D" uid="uid://beesme6xwchok" path="res://Assets/UI/background.png" id="4_g47nv"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gri84"]
+texture = ExtResource("1_nu5bm")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5b28i"]
+texture = ExtResource("2_s64sc")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_i0u3j"]
+texture = ExtResource("4_647si")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_v2age"]
+sources/0 = SubResource("TileSetAtlasSource_gri84")
+sources/1 = SubResource("TileSetAtlasSource_5b28i")
+sources/2 = SubResource("TileSetAtlasSource_i0u3j")
+
+[node name="Main" type="Node2D"]
+
+[node name="Background" type="TextureRect" parent="."]
+offset_right = 320.0
+offset_bottom = 176.0
+texture = ExtResource("4_g47nv")
+expand_mode = 1
+
+[node name="TileMap" type="TileMap" parent="."]
+texture_filter = 1
+tile_set = SubResource("TileSet_v2age")
+format = 2
+layer_1/tile_data = PackedInt32Array()
+script = ExtResource("1_m65e4")
