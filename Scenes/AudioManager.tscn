@@ -39,12 +39,12 @@ volume_db = -5.0
 
 [node name="Plant1" type="AudioStreamPlayer" parent="PlantSounds"]
 stream = ExtResource("7_6d2pi")
-volume_db = -5.0
+volume_db = -10.0
 
 [node name="Plant2" type="AudioStreamPlayer" parent="PlantSounds"]
 stream = ExtResource("8_acyf2")
-volume_db = -5.0
+volume_db = -10.0
 
 [node name="Plant3" type="AudioStreamPlayer" parent="PlantSounds"]
 stream = ExtResource("9_md7cm")
-volume_db = -5.0
+volume_db = -10.0
