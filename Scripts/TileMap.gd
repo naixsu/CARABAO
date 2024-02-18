@@ -5,10 +5,11 @@ extends TileMap
 @onready var randomButton = $"../RandomButton"
 @onready var plantButton = $"../PlantButton"
 @onready var seedTiles = $"../SeedTiles"
+@onready var carabaoContainer = $"../CarabaoContainer"
 @onready var tilledCountLabel = $"../TilledCount"
 @onready var grownCountLabel = $"../GrownCount"
 @onready var harvestCountLabel = $"../HarvestCount"
-
+@onready var end = $"../End"
 
 
 @export var CarabaoScene : PackedScene
@@ -24,6 +25,7 @@ var radius = 0
 var tilledCount = 0
 var grownCount = 0
 var harvestCount = 0
+var maxHarvestCount = 0
 @export var lookTime = .5
 @export var seedTimer = 3
 
@@ -93,7 +95,8 @@ func _process(_delta):
 	tile = local_to_map(get_global_mouse_position())
 
 	erase_layer_tiles(tilemapLayers["hover"])
-	hover_tile()
+	if currentState == State.TILLING or currentState == State.CARABAO:
+		hover_tile()
 	
 	tilledCountLabel.text = str(tilledCount)
 	grownCountLabel.text = str(grownCount)
@@ -112,15 +115,20 @@ func _process(_delta):
 
 func _input(event):
 	# Click to till
+	if not tileDict.has(str(tile)):
+		return
+		
 	if event.is_action_pressed("Click"):
 		if currentState == State.TILLING:
 			set_tile(tile, "tilled", true, 0)
+			AudioManager.play_sound("tillSound")
 			print("Tilled tile at: ", str(tile))
 		elif currentState == State.CARABAO:
 			set_tile(tile, "carabao", true, 0)
 			
 	if event.is_action_pressed("RClick"):
 		set_tile(tile, "grass", true, 0)
+		AudioManager.play_sound("tillSound")
 
 
 func set_tile(pos: Vector2, type: String, click: bool, phase: int):
@@ -182,11 +190,8 @@ func plant_tiles():
 		if not tileData.isOuter:
 			newTileDict[str(tileData.pos)] = tileData
 	
-	#for t in newTileDict.values():
-		#print(t)
+	maxHarvestCount = tilledCount
 	
-	#print(mainCarabao.pos)
-	#print("tilledCount: ", tilledCount)
 	look_for_tiles()
 
 
@@ -244,6 +249,7 @@ func stop_moving():
 	newTileDict[str(t)].isHarvested and not newTileDict[str(t)].isGrown:
 		print("Planting tile: ", t)
 		set_tile(t, "plant", false, 1)
+		AudioManager.play_sound("plantSound")
 		newTileDict[str(t)].isSeed = true
 		# instantiate a seednode 
 		var seedNode = SeedNode.instantiate()
@@ -269,6 +275,7 @@ func stop_moving():
 	elif newTileDict[str(t)].isGrown and not newTileDict[str(t)].isHarvested and tilledCount == 0:
 		set_state(State.HARVESTING)
 		print("Harvest tile: ", t)
+		AudioManager.play_sound("harvestSound")
 		mainCarabao.pos = t
 		move_carabao(t)
 		erase_tile(tilemapLayers["plant"], t)
@@ -285,7 +292,7 @@ func stop_moving():
 			set_state(State.LOOKING)
 			look_for_tiles()
 			
-		elif tilledCount == 0 and grownCount == 0:
+		elif tilledCount == 0 and grownCount == 0 and maxHarvestCount == harvestCount:
 			set_state(State.GAMEOVER)
 			end_game()
 
@@ -296,6 +303,11 @@ func end_game():
 	overlayTiles = []
 	newOverlayTiles = []
 	erase_layer_tiles(tilemapLayers["overlay"])
+	AudioManager.stop_sound("mainGame")
+	AudioManager.play_sound("endSound")
+	end.show()
+	
+	
 
 
 func move_to(t: Vector2i):
@@ -304,6 +316,7 @@ func move_to(t: Vector2i):
 	#overlayTiles = []
 	#newOverlayTiles = []
 	#if currentState != State.HARVESTING:
+	AudioManager.play_sound("moveSound")
 	set_state(State.MOVING)
 	# move carabao from mainCarabao.pos to t
 	var targetPosition = map_to_local(t)
@@ -441,6 +454,7 @@ func move_carabao(pos: Vector2i):
 		
 	mainCarabao.position = map_to_local(pos)
 	mainCarabao.pos = pos
+	AudioManager.play_sound("cowSound")
 	
 	print("Carabao moved to: ", mainCarabao.position, " : ", mainCarabao.pos)
 
@@ -453,7 +467,7 @@ func spawn_carabao(pos: Vector2i):
 	
 	var root = get_tree().get_root()
 	var main = root.get_node("Main")
-	main.add_child(mainCarabao)
+	carabaoContainer.add_child(mainCarabao)
 	mainCarabao.connect("stop_moving", stop_moving)
 	
 
@@ -553,7 +567,7 @@ func clear_tiles():
 func random_place():
 	# Random till
 	set_state(State.TILLING)
-	
+	AudioManager.play_sound("plantSound")
 	for col in cols:
 		for row in rows:
 			if col == 0 or col == cols - 1\
@@ -633,6 +647,7 @@ func init_set_tile(pos: Vector2, atlas: Vector2i, isOuter: bool):
 
 
 func init():
+	AudioManager.play_sound("mainGame")
 	disable_button_on_state()
 	for col in cols:
 		for row in rows:
@@ -689,24 +704,64 @@ func init():
 	#set_state(State.TILLING)
 
 
+func go_to_menu():
+	var root = get_tree().get_root()
+	var menu = root.get_node("Menu")
+	var main = root.get_node("Main")
+	menu.main_menu()
+	menu.show()
+	#await get_tree().create_timer(0.2).timeout
+	main.queue_free()
+
+
 func _on_plant_button_pressed():
+	AudioManager.play_sound("clickSound")
 	set_state(State.PLANTING)
 	plant_tiles()
 
 
 func _on_hoe_button_pressed():
+	AudioManager.play_sound("clickSound")
 	set_state(State.TILLING)
 
 
 func _on_carabao_button_pressed():
+	AudioManager.play_sound("clickSound")
 	set_state(State.CARABAO)
 
 
 func _on_random_button_pressed():
+	AudioManager.play_sound("clickSound")
 	set_state(State.RANDOM)
 	randomize_tiles()
 
 
 func _on_cancel_button_pressed():
+	AudioManager.play_sound("clickSound")
+	AudioManager.play_sound("clearSound")
 	set_state(State.TILLING)
 	clear_tiles()
+
+
+func _on_back_button_pressed():
+	AudioManager.play_sound("clickSound")
+	go_to_menu()
+
+
+func _on_play_again_button_pressed():
+	AudioManager.play_sound("clickSound")
+	AudioManager.play_sound("clearSound")
+	end.hide()
+	set_state(State.TILLING)
+	clear_tiles()
+
+
+func _on_menu_button_pressed():
+	AudioManager.play_sound("clickSound")
+	go_to_menu()
+
+
+func _on_quit_button_pressed():
+	AudioManager.play_sound("clickSound")
+	await get_tree().create_timer(0.2).timeout
+	get_tree().quit()

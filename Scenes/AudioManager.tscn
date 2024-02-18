@@ -1,0 +1,121 @@
+[gd_scene load_steps=23 format=3 uid="uid://legjpl3yd68r"]
+
+[ext_resource type="Script" path="res://Scripts/AudioManager.gd" id="1_amvtu"]
+[ext_resource type="AudioStream" uid="uid://c17ltsgq13dpv" path="res://Assets/Audio/Click.mp3" id="2_1yaxb"]
+[ext_resource type="AudioStream" uid="uid://ryik4aiqymh8" path="res://Assets/Audio/harvest.ogg" id="3_3f3ca"]
+[ext_resource type="AudioStream" uid="uid://clx5uw25cthb8" path="res://Assets/Audio/MainMenu.mp3" id="3_a5ky7"]
+[ext_resource type="AudioStream" uid="uid://b7sta3i7kdaop" path="res://Assets/Audio/Till1.ogg" id="3_ir5bt"]
+[ext_resource type="AudioStream" uid="uid://b4qvplml3d10c" path="res://Assets/Audio/Till2.ogg" id="4_lx2ey"]
+[ext_resource type="AudioStream" uid="uid://6n3j0pvrusyu" path="res://Assets/Audio/MainGame.mp3" id="4_oc2nv"]
+[ext_resource type="AudioStream" uid="uid://c7qhcqy1ckux0" path="res://Assets/Audio/clear.ogg" id="4_x8dyw"]
+[ext_resource type="AudioStream" uid="uid://b1kv8l1iyuc35" path="res://Assets/Audio/Till3.ogg" id="5_026an"]
+[ext_resource type="AudioStream" uid="uid://287l5td64ns0" path="res://Assets/Audio/end.ogg" id="5_odepq"]
+[ext_resource type="AudioStream" uid="uid://b2xx81cbgjpmp" path="res://Assets/Audio/Till4.ogg" id="6_3kpp4"]
+[ext_resource type="AudioStream" uid="uid://d70r66bd677x" path="res://Assets/Audio/plant1.ogg" id="7_6d2pi"]
+[ext_resource type="AudioStream" uid="uid://ry2nwgfvykc3" path="res://Assets/Audio/plant2.ogg" id="8_acyf2"]
+[ext_resource type="AudioStream" uid="uid://di6xm7gvf4qwk" path="res://Assets/Audio/plant3.ogg" id="9_md7cm"]
+[ext_resource type="AudioStream" uid="uid://dfjx8iq4kmfxe" path="res://Assets/Audio/cow1.ogg" id="13_lpmrj"]
+[ext_resource type="AudioStream" uid="uid://bwlght5g1tytg" path="res://Assets/Audio/cow2.ogg" id="14_w2ssw"]
+[ext_resource type="AudioStream" uid="uid://b1mwm10pfbbhw" path="res://Assets/Audio/cow3.ogg" id="15_nkgyw"]
+[ext_resource type="AudioStream" uid="uid://5bkjct01v8qi" path="res://Assets/Audio/cow4.ogg" id="16_o3flh"]
+[ext_resource type="AudioStream" uid="uid://dm6tk8vhye3a2" path="res://Assets/Audio/step1.ogg" id="17_fkhgj"]
+[ext_resource type="AudioStream" uid="uid://dm6bem51diitm" path="res://Assets/Audio/step2.ogg" id="18_f1eny"]
+[ext_resource type="AudioStream" uid="uid://c80vmndt043os" path="res://Assets/Audio/step3.ogg" id="19_e0toj"]
+[ext_resource type="AudioStream" uid="uid://drm8f6qolghf1" path="res://Assets/Audio/step4.ogg" id="20_m0ntb"]
+
+[node name="AudioManager" type="Node"]
+script = ExtResource("1_amvtu")
+
+[node name="ClickSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_1yaxb")
+volume_db = -5.66
+
+[node name="MainMenu" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_a5ky7")
+volume_db = -15.0
+bus = &"BGM"
+
+[node name="MainGame" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_oc2nv")
+volume_db = -10.0
+bus = &"BGM"
+
+[node name="HarvestSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_3f3ca")
+volume_db = -10.0
+
+[node name="ClearSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_x8dyw")
+volume_db = -10.0
+
+[node name="EndSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_odepq")
+volume_db = -10.0
+
+[node name="TillSounds" type="Node" parent="."]
+
+[node name="Till1" type="AudioStreamPlayer" parent="TillSounds"]
+stream = ExtResource("3_ir5bt")
+volume_db = -7.075
+
+[node name="Till2" type="AudioStreamPlayer" parent="TillSounds"]
+stream = ExtResource("4_lx2ey")
+volume_db = -8.78
+
+[node name="Till3" type="AudioStreamPlayer" parent="TillSounds"]
+stream = ExtResource("5_026an")
+volume_db = -5.0
+
+[node name="Till4" type="AudioStreamPlayer" parent="TillSounds"]
+stream = ExtResource("6_3kpp4")
+volume_db = -5.0
+
+[node name="PlantSounds" type="Node" parent="."]
+
+[node name="Plant1" type="AudioStreamPlayer" parent="PlantSounds"]
+stream = ExtResource("7_6d2pi")
+volume_db = -10.0
+
+[node name="Plant2" type="AudioStreamPlayer" parent="PlantSounds"]
+stream = ExtResource("8_acyf2")
+volume_db = -10.0
+
+[node name="Plant3" type="AudioStreamPlayer" parent="PlantSounds"]
+stream = ExtResource("9_md7cm")
+volume_db = -10.0
+
+[node name="CowSounds" type="Node" parent="."]
+
+[node name="Cow1" type="AudioStreamPlayer" parent="CowSounds"]
+stream = ExtResource("13_lpmrj")
+volume_db = -5.0
+
+[node name="Cow2" type="AudioStreamPlayer" parent="CowSounds"]
+stream = ExtResource("14_w2ssw")
+volume_db = -10.0
+
+[node name="Cow3" type="AudioStreamPlayer" parent="CowSounds"]
+stream = ExtResource("15_nkgyw")
+volume_db = -10.0
+
+[node name="Cow4" type="AudioStreamPlayer" parent="CowSounds"]
+stream = ExtResource("16_o3flh")
+volume_db = -10.0
+
+[node name="MoveSounds" type="Node" parent="."]
+
+[node name="Move1" type="AudioStreamPlayer" parent="MoveSounds"]
+stream = ExtResource("17_fkhgj")
+volume_db = -7.075
+
+[node name="Move2" type="AudioStreamPlayer" parent="MoveSounds"]
+stream = ExtResource("18_f1eny")
+volume_db = -7.075
+
+[node name="Move3" type="AudioStreamPlayer" parent="MoveSounds"]
+stream = ExtResource("19_e0toj")
+volume_db = -7.075
+
+[node name="Move4" type="AudioStreamPlayer" parent="MoveSounds"]
+stream = ExtResource("20_m0ntb")
+volume_db = -7.075

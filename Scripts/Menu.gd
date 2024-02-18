@@ -14,8 +14,8 @@ var maxPageNumber = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	menuNode.show()
-	factNode.hide()
+	main_menu()
+	
 	cb1.play("default")
 	cb2.play("default")
 	cb3.play("default")
@@ -30,6 +30,13 @@ func _process(delta):
 	pass
 
 
+func main_menu():
+	AudioManager.stop_sound("mainGame")
+	AudioManager.play_sound("mainMenu")
+	menuNode.show()
+	factNode.hide()
+
+
 func open_page():
 	for page in pages.get_children():
 		page.hide()
@@ -42,19 +49,25 @@ func play_game():
 	self.hide()
 
 func _on_play_button_pressed():
+	AudioManager.play_sound("clickSound")
+	AudioManager.stop_sound("mainMenu")
 	play_game()
 
 
 func _on_fact_button_pressed():
+	AudioManager.play_sound("clickSound")
 	menuNode.hide() 
 	factNode.show()
 
 
 func _on_qui_button_pressed():
+	AudioManager.play_sound("clickSound")
+	await get_tree().create_timer(0.2).timeout
 	get_tree().quit()
 
 
 func _on_back_button_pressed():
+	AudioManager.play_sound("clickSound")
 	pageNumber -= 1
 	if pageNumber < 0:
 		pageNumber = maxPageNumber - 1
@@ -62,6 +75,7 @@ func _on_back_button_pressed():
 
 
 func _on_next_button_pressed():
+	AudioManager.play_sound("clickSound")
 	pageNumber += 1
 	if pageNumber > maxPageNumber - 1:
 		pageNumber = 0
@@ -69,5 +83,6 @@ func _on_next_button_pressed():
 
 
 func _on_menu_button_pressed():
+	AudioManager.play_sound("clickSound")
 	factNode.hide()
 	menuNode.show()

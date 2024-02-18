@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://cmkjwmjo3vi1o"]
+[gd_scene load_steps=23 format=3 uid="uid://cmkjwmjo3vi1o"]
 
 [ext_resource type="Script" path="res://Scripts/Menu.gd" id="1_1y7qs"]
 [ext_resource type="Texture2D" uid="uid://beesme6xwchok" path="res://Assets/UI/background.png" id="1_gtbmu"]
@@ -12,6 +12,7 @@
 [ext_resource type="FontFile" uid="uid://da8ve8i1xffv2" path="res://Assets/Fonts/rainyhearts.ttf" id="9_01xle"]
 [ext_resource type="Texture2D" uid="uid://by535krorjm7w" path="res://Assets/UI/Canvas.png" id="10_b5din"]
 [ext_resource type="Texture2D" uid="uid://b1fjugyf0a5dv" path="res://Assets/UI/arrow.png" id="11_j4nlx"]
+[ext_resource type="PackedScene" uid="uid://b33ycxvdm4dpg" path="res://Scenes/Analyzer.tscn" id="13_eldt8"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f6y1j"]
 atlas = ExtResource("4_0xync")
@@ -94,6 +95,10 @@ offset_right = 320.0
 offset_bottom = 176.0
 texture = ExtResource("1_gtbmu")
 expand_mode = 1
+
+[node name="Analyzer" parent="." instance=ExtResource("13_eldt8")]
+layout_mode = 0
+mouse_filter = 1
 
 [node name="MenuNode" type="Control" parent="."]
 anchors_preset = 0
