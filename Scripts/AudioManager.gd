@@ -5,7 +5,7 @@ extends Node
 @onready var plantSound = $PlantSounds
 @onready var harvestSound = $HarvestSound
 @onready var clearSound = $ClearSound
-
+@onready var endSound = $EndSound
 
 func play_sound(sound: String):
 	var stream = null
@@ -28,6 +28,9 @@ func play_sound(sound: String):
 	
 	elif sound == "clearSound":
 		stream = clearSound
+	
+	elif sound == "endSound":
+		stream = endSound
 		
 	stream.play()
 

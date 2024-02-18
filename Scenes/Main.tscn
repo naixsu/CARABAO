@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://csjhvyusgnjka"]
+[gd_scene load_steps=28 format=3 uid="uid://csjhvyusgnjka"]
 
 [ext_resource type="Script" path="res://Scripts/TileMap.gd" id="1_m65e4"]
 [ext_resource type="Texture2D" uid="uid://bdwf4xtvp787e" path="res://Assets/Tiles/Grass Tile.png" id="1_nu5bm"]
@@ -207,6 +207,8 @@ sources/4 = SubResource("TileSetAtlasSource_oofjp")
 sources/5 = SubResource("TileSetAtlasSource_fw1eb")
 sources/6 = SubResource("TileSetAtlasSource_b1j3v")
 
+[sub_resource type="CanvasTexture" id="CanvasTexture_jci02"]
+
 [node name="Main" type="Node2D"]
 
 [node name="Background" type="TextureRect" parent="."]
@@ -296,6 +298,8 @@ text = "Back"
 
 [node name="SeedTiles" type="Node2D" parent="."]
 
+[node name="CarabaoContainer" type="Node2D" parent="."]
+
 [node name="TilledCount" type="Label" parent="."]
 offset_right = 40.0
 offset_bottom = 23.0
@@ -310,9 +314,108 @@ offset_left = 89.0
 offset_right = 129.0
 offset_bottom = 23.0
 
+[node name="End" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 320.0
+offset_bottom = 176.0
+
+[node name="Modal" type="Control" parent="End"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="BG" type="TextureRect" parent="End/Modal"]
+modulate = Color(0, 0, 0, 0.27451)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -88.0
+offset_right = 160.0
+offset_bottom = 88.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_jci02")
+
+[node name="Label" type="Label" parent="End/Modal"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -57.5
+offset_top = -36.0
+offset_right = 57.5
+offset_bottom = -13.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("18_38m53")
+text = "Harvest Complete!"
+
+[node name="PlayAgainButton" type="Button" parent="End/Modal"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -112.0
+offset_top = -10.5
+offset_right = -41.0
+offset_bottom = 10.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("9_4b46k")
+theme_override_fonts/font = ExtResource("18_38m53")
+text = "Play Again"
+
+[node name="MenuButton" type="Button" parent="End/Modal"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -35.5
+offset_top = -10.5
+offset_right = 35.5
+offset_bottom = 10.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("9_4b46k")
+theme_override_fonts/font = ExtResource("18_38m53")
+text = "Menu"
+
+[node name="QuitButton" type="Button" parent="End/Modal"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 42.0
+offset_top = -10.5
+offset_right = 113.0
+offset_bottom = 10.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("9_4b46k")
+theme_override_fonts/font = ExtResource("18_38m53")
+text = "Quit"
+
 [connection signal="pressed" from="HoeButton" to="TileMap" method="_on_hoe_button_pressed"]
 [connection signal="pressed" from="CarabaoButton" to="TileMap" method="_on_carabao_button_pressed"]
 [connection signal="pressed" from="PlantButton" to="TileMap" method="_on_plant_button_pressed"]
 [connection signal="pressed" from="RandomButton" to="TileMap" method="_on_random_button_pressed"]
 [connection signal="pressed" from="CancelButton" to="TileMap" method="_on_cancel_button_pressed"]
 [connection signal="pressed" from="BackButton" to="TileMap" method="_on_back_button_pressed"]
+[connection signal="pressed" from="End/Modal/PlayAgainButton" to="TileMap" method="_on_play_again_button_pressed"]
+[connection signal="pressed" from="End/Modal/MenuButton" to="TileMap" method="_on_menu_button_pressed"]
+[connection signal="pressed" from="End/Modal/QuitButton" to="TileMap" method="_on_quit_button_pressed"]
