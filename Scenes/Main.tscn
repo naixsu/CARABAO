@@ -301,15 +301,18 @@ text = "Back"
 [node name="CarabaoContainer" type="Node2D" parent="."]
 
 [node name="TilledCount" type="Label" parent="."]
+visible = false
 offset_right = 40.0
 offset_bottom = 23.0
 
 [node name="GrownCount" type="Label" parent="."]
+visible = false
 offset_left = 46.0
 offset_right = 86.0
 offset_bottom = 23.0
 
 [node name="HarvestCount" type="Label" parent="."]
+visible = false
 offset_left = 89.0
 offset_right = 129.0
 offset_bottom = 23.0

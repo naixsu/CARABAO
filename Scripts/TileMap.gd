@@ -316,6 +316,7 @@ func move_to(t: Vector2i):
 	#overlayTiles = []
 	#newOverlayTiles = []
 	#if currentState != State.HARVESTING:
+	AudioManager.play_sound("moveSound")
 	set_state(State.MOVING)
 	# move carabao from mainCarabao.pos to t
 	var targetPosition = map_to_local(t)
@@ -453,6 +454,7 @@ func move_carabao(pos: Vector2i):
 		
 	mainCarabao.position = map_to_local(pos)
 	mainCarabao.pos = pos
+	AudioManager.play_sound("cowSound")
 	
 	print("Carabao moved to: ", mainCarabao.position, " : ", mainCarabao.pos)
 
