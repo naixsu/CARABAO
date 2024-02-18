@@ -18,6 +18,8 @@ var overlayTiles = []
 var newOverlayTiles = []
 var radius = 0
 var tilledCount = 0
+var grownCount = 0
+var harvestCount = 0
 var lookTime = .3
 var seedTimer = 3
 
@@ -29,7 +31,8 @@ var carabaoSpawned : bool = false
 
 var mainCarabao : Node2D
 
-var randomTilledChance : float = 0.40
+var randomTilledChance : float = 0.20
+var patrolChance : float = 0.20
 
 
 enum State {
@@ -41,7 +44,8 @@ enum State {
 	RANDOM, # 5
 	LOOKING, # 6
 	MOVING, # 7
-	GAMEOVER # 8
+	PATROLLING, # 8
+	GAMEOVER # 9
 }
 
 var currentState = State.SETUP : set = set_state
@@ -73,6 +77,8 @@ var plantTiles = {
 	4: Vector2i(4, 0), # phase = 4
 }
 
+var isPatrolling : bool = false
+
 func _ready():
 	# Init
 	# Godot does cols first
@@ -85,6 +91,13 @@ func _process(_delta):
 	erase_layer_tiles(tilemapLayers["hover"])
 	hover_tile()
 	
+	#if currentState == State.PATROLLING:
+		#await get_tree().create_timer(2).timeout
+		#if not isPatrolling:
+			#if randf() < patrolChance:
+				#patrol()
+				#isPatrolling = true
+	
 	#if carabaoSpawned:
 		#print(local_to_map(mainCarabao.position))
 
@@ -94,6 +107,7 @@ func _input(event):
 	if event.is_action_pressed("Click"):
 		if currentState == State.TILLING:
 			set_tile(tile, "tilled", true, 0)
+			print("Tilled tile at: ", str(tile))
 		elif currentState == State.CARABAO:
 			set_tile(tile, "carabao", true, 0)
 	if event.is_action_pressed("RClick"):
@@ -118,7 +132,6 @@ func set_tile(pos: Vector2, type: String, click: bool, phase: int):
 		if not carabaoSpawned:
 			spawn_carabao(tile)
 		else:
-			#mainCarabao.position = map_to_local(tile)
 			move_carabao(tile)
 		
 		plantButton.disabled = false
@@ -163,8 +176,8 @@ func plant_tiles():
 	#for t in newTileDict.values():
 		#print(t)
 	
-	print(mainCarabao.pos)
-	print("tilledCount: ", tilledCount)
+	#print(mainCarabao.pos)
+	#print("tilledCount: ", tilledCount)
 	look_for_tiles()
 
 
@@ -175,15 +188,19 @@ func calculate_travel_time(start: Vector2, end: Vector2, speed: float) -> float:
 
 
 func end_phase(seedNode: Node2D):
-	print("Ending phase of: ", seedNode)
+	#print("Ending phase of: ", seedNode)
 	var phase = newTileDict[str(seedNode.name)].seedPhase
 	phase += 1
 	
 	if phase == 4:
-		print("LAST PHASE OF: ", str(seedNode.name))
+		#print("LAST PHASE OF: ", str(seedNode.name))
 		set_tile(newTileDict[str(seedNode.name)].pos, "plant", false, phase)
+		newTileDict[str(seedNode.name)].isGrown = true
+		grownCount += 1
 		seedNode.queue_free()
+		look_for_tiles()
 		return
+		
 	set_tile(newTileDict[str(seedNode.name)].pos, "plant", false, phase)
 	seedNode.start_timer()
 
@@ -191,10 +208,28 @@ func end_phase(seedNode: Node2D):
 func stop_moving():
 	var t = local_to_map(mainCarabao.position)
 	print("Stop moving: ", t)
-	var tileObj = newTileDict[str(t)]
+	
+	#if currentState == State.PATROLLING:
+		#isPatrolling = false
+		##move_carabao(t)
+		##patrol()
+		##return
+	
+	if currentState == State.HARVESTING:
+		grownCount -= 1
+		harvestCount += 1
+		print("HARVESTED AT: ", str(t))
+		mainCarabao.pos = t
+		move_carabao(t)
+		newTileDict[str(t)].isHarvested = true
+		newTileDict[str(t)].isSeed = false
+		erase_tile(tilemapLayers["plant"], t)
+		look_for_tiles()
+		
 	
 	# This is where seed is planted
-	if newTileDict[str(t)].isTilled:
+	if newTileDict[str(t)].isTilled and not newTileDict[str(t)].isSeed and not\
+	newTileDict[str(t)].isHarvested:
 		print("Planting tile: ", t)
 		set_tile(t, "plant", false, 1)
 		newTileDict[str(t)].isSeed = true
@@ -212,10 +247,12 @@ func stop_moving():
 
 
 func move_to(t: Vector2i):
-	set_state(State.MOVING)
+	#print("moving to, ", str(t))
+	if currentState != State.HARVESTING:
+		set_state(State.MOVING)
 	# move carabao from mainCarabao.pos to t
 	var targetPosition = map_to_local(t)
-	print(targetPosition)
+	#print(targetPosition)
 
 	#var tween = create_tween()
 	##tween.tween_property(mainCarabao, "position", Vector2(mainCarabao.pos.x, mainCarabao.pos.y), 1)
@@ -223,30 +260,47 @@ func move_to(t: Vector2i):
 	#print("TIME: ", time)
 	#tween.tween_property(mainCarabao, "position", Vector2(target_position.x, target_position.y), time)
 	#mainCarabao.play_run()
+	mainCarabao.moving = true
 	mainCarabao.go_towards_target_point(mainCarabao.position, targetPosition)
 	
 
 func check_for_tilled():
-	print("Checking for tilled tiles among overlays")
+	#print("Checking for tilled tiles among overlays")
 	for t in overlayTiles:
-		if newTileDict[str(t)].isTilled and not newTileDict[str(t)].isSeed:
-			radius = 0
-			overlayTiles = []
-			newOverlayTiles = []
-			move_to(t)
-
+		if currentState == State.LOOKING:
+			if newTileDict[str(t)].isTilled and not newTileDict[str(t)].isSeed and not\
+			newTileDict[str(t)].isHarvested:
+				radius = 0
+				overlayTiles = []
+				newOverlayTiles = []
+				move_to(t)
+			
+			elif newTileDict[str(t)].isTilled and newTileDict[str(t)].isGrown and not\
+			newTileDict[str(t)].isHarvested:
+				print("SEED FOUND AT: ", str(t))
+				set_state(State.HARVESTING)
+				radius = 0
+				overlayTiles = []
+				newOverlayTiles = []
+				move_to(t)
 
 func look_for_tiles():
-	if tilledCount == 0:
+	if tilledCount == 0 and grownCount == 0:
 		erase_layer_tiles(tilemapLayers["overlay"])
-		print("Harvesting")
-		set_state(State.HARVESTING)
 		return
+	
+			
+	if grownCount > 0 and currentState != State.HARVESTING:
+		#print("Harvesting")
+		set_state(State.HARVESTING)
+	#else:
+		#print("Patrolling")
+		#set_state(State.PATROLLING)
 		
 	await get_tree().create_timer(lookTime).timeout
 	set_state(State.LOOKING)
 	radius += 1
-	print("Looking for tiles with radius: ", radius)
+	#print("Looking for tiles with radius: ", radius)
 	erase_layer_tiles(tilemapLayers["overlay"])
 	
 	
@@ -293,6 +347,10 @@ func look_for_tiles():
 
 
 func move_carabao(pos: Vector2i):
+	if not carabaoSpawned:
+		#print("Carabao not spawned")
+		return
+		
 	mainCarabao.position = map_to_local(pos)
 	mainCarabao.pos = pos
 	
@@ -302,14 +360,14 @@ func move_carabao(pos: Vector2i):
 func spawn_carabao(pos: Vector2i):
 	var carabao = CarabaoScene.instantiate()
 	mainCarabao = carabao
-	
+	carabaoSpawned = true
 	move_carabao(pos)
 	
 	var root = get_tree().get_root()
 	var main = root.get_node("Main")
 	main.add_child(mainCarabao)
 	mainCarabao.connect("stop_moving", stop_moving)
-	carabaoSpawned = true
+	
 
 
 func check_tilled_dict():
@@ -334,7 +392,18 @@ func set_state(newState):
 	currentState = newState
 	print("state changed: ", currentState)
 	
+	#if currentState == State.PATROLLING:
+		#patrol()
+	
 	disable_button_on_state()
+
+
+func patrol():
+	var randomTile = newTileDict.keys()[randi() % newTileDict.size()]
+	randomTile = newTileDict[str(randomTile)].pos
+	print("Patrolling to: ", str(randomTile))
+	move_to(randomTile)
+	
 
 
 func disable_button_on_state():
@@ -389,8 +458,8 @@ func clear_tiles():
 		tileData.seedTimer = seedTimer
 	
 	if carabaoSpawned:
-		carabaoSpawned = false
 		mainCarabao.queue_free()
+	carabaoSpawned = false
 
 
 func random_place():
@@ -421,7 +490,7 @@ func random_place():
 			randomTile = tileDict[str(randomTile)].pos
 			var coords = Vector2i(randomTile)
 			
-			if mainCarabao == null:
+			if not carabaoSpawned:
 				spawn_carabao(coords)
 			else:
 				move_carabao(coords)

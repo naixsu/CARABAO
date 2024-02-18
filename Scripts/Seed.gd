@@ -16,7 +16,7 @@ func _process(delta):
 	
 
 func start_timer():
-	print("Starting timer")
+	#print("Starting timer")
 	timer.start()
 
 

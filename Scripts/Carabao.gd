@@ -15,10 +15,11 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	# Round each component of the position vector based on decimal value
+	#print(moving)
 	if not moving:
 		return
 		
+	# Round each component of the position vector based on decimal value
 	var x = "%.2f" % position.x
 	var y = "%.2f" % position.y
 	var splitX = x.split(".")
@@ -41,9 +42,11 @@ func _process(_delta):
 	if reformed == targetPos or\
 		reformed.x - 1 == targetPos.x or reformed.x + 1 == targetPos.x or\
 		reformed.y - 1 == targetPos.y or reformed.y + 1 == targetPos.y:
+			
 			velocity = Vector2.ZERO
 			stop_moving.emit()
 			play_idle()
+			#print("here: ", velocity)
 			moving = false
 		
 	move_and_slide()
@@ -51,8 +54,11 @@ func _process(_delta):
 
 func go_towards_target_point(currentAgentPosition, nextPathPosition):
 	moving = true
+	#print("moving ", moving, " ", currentAgentPosition, " ", nextPathPosition)
 	var newVelocity: Vector2 = nextPathPosition - currentAgentPosition
+	#print("newVelocity: ", newVelocity)
 	targetPos = nextPathPosition
+	#print("targetPos: ", targetPos)
 	newVelocity = newVelocity.normalized()
 	newVelocity = newVelocity * speed
 	velocity = newVelocity
