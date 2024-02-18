@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://csjhvyusgnjka"]
+[gd_scene load_steps=26 format=3 uid="uid://csjhvyusgnjka"]
 
 [ext_resource type="Script" path="res://Scripts/TileMap.gd" id="1_m65e4"]
 [ext_resource type="Texture2D" uid="uid://bdwf4xtvp787e" path="res://Assets/Tiles/Grass Tile.png" id="1_nu5bm"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://bqifkh5b4f85h" path="res://Assets/Tiles/Overlay Tile.png" id="8_1pk7y"]
 [ext_resource type="Theme" uid="uid://bfd857okf6esm" path="res://Assets/UI/buttonTheme.tres" id="9_4b46k"]
 [ext_resource type="Texture2D" uid="uid://dn5bg5yicexdc" path="res://Assets/UI/seed.png" id="10_j3tts"]
+[ext_resource type="PackedScene" uid="uid://cgaxtjqbw64xt" path="res://Scenes/Seed.tscn" id="11_c4u70"]
 [ext_resource type="Texture2D" uid="uid://vbjl3wqf1ajn" path="res://Assets/UI/hoe.png" id="11_wxw52"]
 [ext_resource type="Texture2D" uid="uid://b3vnhjx6h3dcx" path="res://Assets/UI/carabao.png" id="12_41el4"]
 [ext_resource type="Texture2D" uid="uid://xmyby4ihsrnf" path="res://Assets/UI/random.png" id="13_purdw"]
@@ -223,8 +224,10 @@ layer_2/tile_data = PackedInt32Array()
 layer_3/tile_data = PackedInt32Array()
 layer_4/modulate = Color(1, 1, 1, 0.294118)
 layer_4/tile_data = PackedInt32Array()
+layer_5/tile_data = PackedInt32Array()
 script = ExtResource("1_m65e4")
 CarabaoScene = ExtResource("14_b15w6")
+SeedNode = ExtResource("11_c4u70")
 
 [node name="HoeButton" type="Button" parent="."]
 offset_left = 83.0
@@ -280,6 +283,8 @@ theme = ExtResource("9_4b46k")
 [node name="Sprite2D" type="Sprite2D" parent="CancelButton"]
 position = Vector2(12, 11)
 texture = ExtResource("16_rdn6g")
+
+[node name="SeedTiles" type="Node2D" parent="."]
 
 [connection signal="pressed" from="HoeButton" to="TileMap" method="_on_hoe_button_pressed"]
 [connection signal="pressed" from="CarabaoButton" to="TileMap" method="_on_carabao_button_pressed"]

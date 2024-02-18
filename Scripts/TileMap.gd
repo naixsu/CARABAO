@@ -4,9 +4,11 @@ extends TileMap
 @onready var carabaoButton = $"../CarabaoButton"
 @onready var randomButton = $"../RandomButton"
 @onready var plantButton = $"../PlantButton"
+@onready var seedTiles = $"../SeedTiles"
 
 
 @export var CarabaoScene : PackedScene
+@export var SeedNode : PackedScene
 
 
 var gridSize = 5
@@ -16,7 +18,8 @@ var overlayTiles = []
 var newOverlayTiles = []
 var radius = 0
 var tilledCount = 0
-var lookTime = .2
+var lookTime = .3
+var seedTimer = 3
 
 var rows = 11
 var cols = 20
@@ -60,7 +63,14 @@ var tilemapLayers = {
 	"hover": 1,
 	"tilled": 2,
 	"plant": 3,
-	"overlay": 4
+	"overlay": 4,
+}
+
+var plantTiles = {
+	1: Vector2i(1, 0), # phase = 1
+	2: Vector2i(2, 0), # phase = 2
+	3: Vector2i(3, 0), # phase = 3
+	4: Vector2i(4, 0), # phase = 4
 }
 
 func _ready():
@@ -83,125 +93,14 @@ func _input(event):
 	# Click to till
 	if event.is_action_pressed("Click"):
 		if currentState == State.TILLING:
-			set_tile(tile, "tilled", true)
+			set_tile(tile, "tilled", true, 0)
 		elif currentState == State.CARABAO:
-			set_tile(tile, "carabao", true)
+			set_tile(tile, "carabao", true, 0)
 	if event.is_action_pressed("RClick"):
-		set_tile(tile, "grass", true)
+		set_tile(tile, "grass", true, 0)
 
 
-func plant_tiles():
-	# set newDict tiles
-	for tileData in tileDict.values():
-		if not tileData.isOuter:
-			newTileDict[str(tileData.pos)] = tileData
-	
-	#for t in newTileDict.values():
-		#print(t)
-	
-	print(mainCarabao.pos)
-	print("tilledCount: ", tilledCount)
-	look_for_tiles()
-
-
-func calculate_travel_time(start: Vector2, end: Vector2, speed: float) -> float:
-	var distance = start.distance_to(end)
-	var time = distance / speed
-	return time + 1
-
-
-func stop_moving():
-	var t = local_to_map(mainCarabao.position)
-	print("Stop moving: ", t)
-	var tileObj = newTileDict[str(t)]
-	if newTileDict[str(t)].isTilled:
-		print("Tilling tile: ", t)
-		newTileDict[str(t)].isSeed = true
-		mainCarabao.pos = t
-		move_carabao(t)
-		tilledCount -= 1
-	
-	if tilledCount > 0:
-		look_for_tiles()
-
-
-func move_to(t: Vector2i):
-	set_state(State.MOVING)
-	# move carabao from mainCarabao.pos to t
-	var targetPosition = map_to_local(t)
-	print(targetPosition)
-
-	#var tween = create_tween()
-	##tween.tween_property(mainCarabao, "position", Vector2(mainCarabao.pos.x, mainCarabao.pos.y), 1)
-	#var time = calculate_travel_time(mainCarabao.pos, t, mainCarabao.speed)
-	#print("TIME: ", time)
-	#tween.tween_property(mainCarabao, "position", Vector2(target_position.x, target_position.y), time)
-	#mainCarabao.play_run()
-	mainCarabao.go_towards_target_point(mainCarabao.position, targetPosition)
-	
-	
-	
-
-func check_for_tilled():
-	print("Checking for tilled tiles among overlays")
-	for t in overlayTiles:
-		if newTileDict[str(t)].isTilled and not newTileDict[str(t)].isSeed:
-			radius = 0
-			overlayTiles = []
-			newOverlayTiles = []
-			move_to(t)
-
-	
-	
-func look_for_tiles():
-	await get_tree().create_timer(lookTime).timeout
-	set_state(State.LOOKING)
-	radius += 1
-	print("Looking for tiles with radius: ", radius)
-	erase_layer_tiles(tilemapLayers["overlay"])
-	
-	set_tile(mainCarabao.pos, "overlay", false)
-	
-	if radius == 1:
-		overlayTiles.append(mainCarabao.pos)
-		check_for_tilled()
-		if currentState == State.LOOKING:
-			look_for_tiles()
-		return
-		
-	newOverlayTiles = []
-	
-	for tilePos in overlayTiles:
-		#print(tilePos)
-		# Add the current tile to the list
-		newOverlayTiles.append(tilePos)
-		
-		# Get the neighbors (up, down, left, right) of the current tile
-		var neighbors = [
-			tilePos + Vector2i(0, -1),  # Up
-			tilePos + Vector2i(0, 1),   # Down
-			tilePos + Vector2i(-1, 0),  # Left
-			tilePos + Vector2i(1, 0)    # Right
-		]
-		
-		# Add the neighbors to the list
-		for neighbor in neighbors:
-			if neighbor.y > 7 or neighbor.y < 2 or\
-				neighbor.x > 17 or neighbor.x < 2:
-					#print("Out of bounds: ", neighbor)
-					continue
-			if neighbor not in newOverlayTiles:
-				newOverlayTiles.append(neighbor)
-				set_tile(neighbor, "overlay", false)
-	
-	#print(newOverlayTiles)
-	overlayTiles = newOverlayTiles
-	check_for_tilled()
-	
-	if currentState == State.LOOKING:
-		look_for_tiles()
-
-func set_tile(pos: Vector2, type: String, click: bool):
+func set_tile(pos: Vector2, type: String, click: bool, phase: int):
 	if click and not tileDict.has(str(tile)):
 		return
 		
@@ -240,11 +139,157 @@ func set_tile(pos: Vector2, type: String, click: bool):
 		and currentState == State.LOOKING: # planting
 			set_cell(tilemapLayers["overlay"], pos, tilemapTiles["overlay"], Vector2i(0, 0), 0)
 	
+	elif type == "plant":
+		newTileDict[str(pos)].seedPhase = phase
+		set_cell(
+			tilemapLayers["plant"],
+			pos,
+			tilemapTiles["plantTiles"],
+			plantTiles[phase],
+			0
+		)
+	
 	#print("set tile: ", tileObj)
 
 
-func distance_to_carabao(pos: Vector2i):
-	return mainCarabao.pos.distance_squared_to(pos)
+
+
+func plant_tiles():
+	# set newDict tiles
+	for tileData in tileDict.values():
+		if not tileData.isOuter:
+			newTileDict[str(tileData.pos)] = tileData
+	
+	#for t in newTileDict.values():
+		#print(t)
+	
+	print(mainCarabao.pos)
+	print("tilledCount: ", tilledCount)
+	look_for_tiles()
+
+
+func calculate_travel_time(start: Vector2, end: Vector2, speed: float) -> float:
+	var distance = start.distance_to(end)
+	var time = distance / speed
+	return time + 1
+
+
+func end_phase(seedNode: Node2D):
+	print("Ending phase of: ", seedNode)
+	var phase = newTileDict[str(seedNode.name)].seedPhase
+	phase += 1
+	
+	if phase == 4:
+		print("LAST PHASE OF: ", str(seedNode.name))
+		set_tile(newTileDict[str(seedNode.name)].pos, "plant", false, phase)
+		seedNode.queue_free()
+		return
+	set_tile(newTileDict[str(seedNode.name)].pos, "plant", false, phase)
+	seedNode.start_timer()
+
+
+func stop_moving():
+	var t = local_to_map(mainCarabao.position)
+	print("Stop moving: ", t)
+	var tileObj = newTileDict[str(t)]
+	
+	# This is where seed is planted
+	if newTileDict[str(t)].isTilled:
+		print("Planting tile: ", t)
+		set_tile(t, "plant", false, 1)
+		newTileDict[str(t)].isSeed = true
+		# instantiate a seednode 
+		var seedNode = SeedNode.instantiate()
+		seedNode.name = str(t)
+		seedNode.seedTimer = seedTimer
+		seedNode.connect("end_phase", end_phase)
+		seedTiles.add_child(seedNode)
+		seedNode.start_timer()
+		mainCarabao.pos = t
+		move_carabao(t)
+		tilledCount -= 1
+		look_for_tiles()
+
+
+func move_to(t: Vector2i):
+	set_state(State.MOVING)
+	# move carabao from mainCarabao.pos to t
+	var targetPosition = map_to_local(t)
+	print(targetPosition)
+
+	#var tween = create_tween()
+	##tween.tween_property(mainCarabao, "position", Vector2(mainCarabao.pos.x, mainCarabao.pos.y), 1)
+	#var time = calculate_travel_time(mainCarabao.pos, t, mainCarabao.speed)
+	#print("TIME: ", time)
+	#tween.tween_property(mainCarabao, "position", Vector2(target_position.x, target_position.y), time)
+	#mainCarabao.play_run()
+	mainCarabao.go_towards_target_point(mainCarabao.position, targetPosition)
+	
+
+func check_for_tilled():
+	print("Checking for tilled tiles among overlays")
+	for t in overlayTiles:
+		if newTileDict[str(t)].isTilled and not newTileDict[str(t)].isSeed:
+			radius = 0
+			overlayTiles = []
+			newOverlayTiles = []
+			move_to(t)
+
+
+func look_for_tiles():
+	if tilledCount == 0:
+		erase_layer_tiles(tilemapLayers["overlay"])
+		print("Harvesting")
+		set_state(State.HARVESTING)
+		return
+		
+	await get_tree().create_timer(lookTime).timeout
+	set_state(State.LOOKING)
+	radius += 1
+	print("Looking for tiles with radius: ", radius)
+	erase_layer_tiles(tilemapLayers["overlay"])
+	
+	
+	set_tile(mainCarabao.pos, "overlay", false, 0)
+	
+	if radius == 1:
+		overlayTiles.append(mainCarabao.pos)
+		check_for_tilled()
+		if currentState == State.LOOKING:
+			look_for_tiles()
+		return
+		
+	newOverlayTiles = []
+	
+	for tilePos in overlayTiles:
+		#print(tilePos)
+		# Add the current tile to the list
+		newOverlayTiles.append(tilePos)
+		
+		# Get the neighbors (up, down, left, right) of the current tile
+		var neighbors = [
+			tilePos + Vector2i(0, -1),  # Up
+			tilePos + Vector2i(0, 1),   # Down
+			tilePos + Vector2i(-1, 0),  # Left
+			tilePos + Vector2i(1, 0)    # Right
+		]
+		
+		# Add the neighbors to the list
+		for neighbor in neighbors:
+			if neighbor.y > 7 or neighbor.y < 2 or\
+				neighbor.x > 17 or neighbor.x < 2:
+					#print("Out of bounds: ", neighbor)
+					continue
+			if neighbor not in newOverlayTiles:
+				newOverlayTiles.append(neighbor)
+				set_tile(neighbor, "overlay", false, 0)
+	
+	#print(newOverlayTiles)
+	overlayTiles = newOverlayTiles
+	check_for_tilled()
+	
+	if currentState == State.LOOKING:
+		look_for_tiles()
 
 
 func move_carabao(pos: Vector2i):
@@ -303,7 +348,8 @@ func disable_button_on_state():
 		State.TILLING:
 			if not carabaoSpawned:
 				carabaoButton.disabled = true
-			plantButton.disabled = true
+			else:
+				plantButton.disabled = false
 		
 		State.PLANTING:
 			hoeButton.disabled = true
@@ -327,12 +373,20 @@ func disable_button_on_state():
 func clear_tiles():
 	# Clear all tilled tiles
 	erase_layer_tiles(tilemapLayers["tilled"])
+	erase_layer_tiles(tilemapLayers["plant"])
+	
+
+	for child in seedTiles.get_children():
+		child.queue_free()
 	
 	# Set isTilled on all tiles to false
 	for tileData in tileDict.values():
 		tileData.isTilled = false
 		tileData.isSeed = false
 		tileData.isGrown = false
+		tileData.isHarvested = false
+		tileData.seedPhase = 0
+		tileData.seedTimer = seedTimer
 	
 	if carabaoSpawned:
 		carabaoSpawned = false
@@ -352,7 +406,7 @@ func random_place():
 			var pos = Vector2(col, row)
 			
 			if randf() < randomTilledChance:
-				set_tile(pos, "tilled", false)
+				set_tile(pos, "tilled", false, 0)
 	
 
 	
@@ -413,7 +467,10 @@ func init_set_tile(pos: Vector2, atlas: Vector2i, isOuter: bool):
 		"isOuter": isOuter,
 		"isSeed": false,
 		"isGrown": false,
-		"isTilled": false
+		"isTilled": false,
+		"isHarvested": false,
+		"seedPhase": 0,
+		"seedTimer": seedTimer,
 	}
 	set_cell(tilemapLayers["grass"], pos, tilemapTiles["grassTiles"], atlas, 0)
 
@@ -494,4 +551,5 @@ func _on_random_button_pressed():
 
 
 func _on_cancel_button_pressed():
+	set_state(State.TILLING)
 	clear_tiles()
