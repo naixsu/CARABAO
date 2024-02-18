@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://csjhvyusgnjka"]
+[gd_scene load_steps=27 format=3 uid="uid://csjhvyusgnjka"]
 
 [ext_resource type="Script" path="res://Scripts/TileMap.gd" id="1_m65e4"]
 [ext_resource type="Texture2D" uid="uid://bdwf4xtvp787e" path="res://Assets/Tiles/Grass Tile.png" id="1_nu5bm"]
@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://xmyby4ihsrnf" path="res://Assets/UI/random.png" id="13_purdw"]
 [ext_resource type="PackedScene" uid="uid://d3j60vl6mq5k1" path="res://Scenes/Carabao.tscn" id="14_b15w6"]
 [ext_resource type="Texture2D" uid="uid://dsp5k6fvlf5qt" path="res://Assets/UI/cancel.png" id="16_rdn6g"]
+[ext_resource type="FontFile" uid="uid://da8ve8i1xffv2" path="res://Assets/Fonts/rainyhearts.ttf" id="18_38m53"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gri84"]
 texture = ExtResource("1_nu5bm")
@@ -284,6 +285,15 @@ theme = ExtResource("9_4b46k")
 position = Vector2(12, 11)
 texture = ExtResource("16_rdn6g")
 
+[node name="BackButton" type="Button" parent="."]
+offset_left = 20.0
+offset_top = 145.0
+offset_right = 44.0
+offset_bottom = 169.0
+theme = ExtResource("9_4b46k")
+theme_override_fonts/font = ExtResource("18_38m53")
+text = "Back"
+
 [node name="SeedTiles" type="Node2D" parent="."]
 
 [node name="TilledCount" type="Label" parent="."]
@@ -305,3 +315,4 @@ offset_bottom = 23.0
 [connection signal="pressed" from="PlantButton" to="TileMap" method="_on_plant_button_pressed"]
 [connection signal="pressed" from="RandomButton" to="TileMap" method="_on_random_button_pressed"]
 [connection signal="pressed" from="CancelButton" to="TileMap" method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="BackButton" to="TileMap" method="_on_back_button_pressed"]

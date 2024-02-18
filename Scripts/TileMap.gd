@@ -275,6 +275,7 @@ func stop_moving():
 	elif newTileDict[str(t)].isGrown and not newTileDict[str(t)].isHarvested and tilledCount == 0:
 		set_state(State.HARVESTING)
 		print("Harvest tile: ", t)
+		AudioManager.play_sound("harvestSound")
 		mainCarabao.pos = t
 		move_carabao(t)
 		erase_tile(tilemapLayers["plant"], t)
@@ -719,5 +720,15 @@ func _on_random_button_pressed():
 
 func _on_cancel_button_pressed():
 	AudioManager.play_sound("clickSound")
+	AudioManager.play_sound("clearSound")
 	set_state(State.TILLING)
 	clear_tiles()
+
+
+func _on_back_button_pressed():
+	AudioManager.play_sound("clickSound")
+	var root = get_tree().get_root()
+	var menu = root.get_node("Menu")
+	var main = root.get_node("Main")
+	menu.show()
+	main.queue_free()
