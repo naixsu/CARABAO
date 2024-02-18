@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://b33ycxvdm4dpg"]
+
+[ext_resource type="Script" path="res://Scripts/Analyzer.gd" id="1_ljhf4"]
+[ext_resource type="Shader" path="res://Assets/Shaders/Menu/Analyzer.gdshader" id="1_ypeln"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m1kr1"]
+shader = ExtResource("1_ypeln")
+shader_parameter/freq_data = null
+
+[node name="Analyzer" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+script = ExtResource("1_ljhf4")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_m1kr1")
+offset_right = 320.0
+offset_bottom = 176.0
+mouse_filter = 2
