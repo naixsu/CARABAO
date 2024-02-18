@@ -14,8 +14,8 @@ var maxPageNumber = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	menuNode.show()
-	factNode.hide()
+	main_menu()
+	
 	cb1.play("default")
 	cb2.play("default")
 	cb3.play("default")
@@ -28,6 +28,13 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
+
+
+func main_menu():
+	AudioManager.stop_sound("mainGame")
+	AudioManager.play_sound("mainMenu")
+	menuNode.show()
+	factNode.hide()
 
 
 func open_page():
@@ -43,6 +50,7 @@ func play_game():
 
 func _on_play_button_pressed():
 	AudioManager.play_sound("clickSound")
+	AudioManager.stop_sound("mainMenu")
 	play_game()
 
 

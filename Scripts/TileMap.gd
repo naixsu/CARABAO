@@ -303,7 +303,7 @@ func end_game():
 	overlayTiles = []
 	newOverlayTiles = []
 	erase_layer_tiles(tilemapLayers["overlay"])
-	
+	AudioManager.stop_sound("mainGame")
 	AudioManager.play_sound("endSound")
 	end.show()
 	
@@ -647,6 +647,7 @@ func init_set_tile(pos: Vector2, atlas: Vector2i, isOuter: bool):
 
 
 func init():
+	AudioManager.play_sound("mainGame")
 	disable_button_on_state()
 	for col in cols:
 		for row in rows:
@@ -707,7 +708,9 @@ func go_to_menu():
 	var root = get_tree().get_root()
 	var menu = root.get_node("Menu")
 	var main = root.get_node("Main")
+	menu.main_menu()
 	menu.show()
+	#await get_tree().create_timer(0.2).timeout
 	main.queue_free()
 
 

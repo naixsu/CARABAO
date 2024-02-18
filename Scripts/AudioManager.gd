@@ -8,10 +8,12 @@ extends Node
 @onready var endSound = $EndSound
 @onready var cowSound = $CowSounds
 @onready var moveSound = $MoveSounds
+@onready var mainGame = $MainGame
+@onready var mainMenu = $MainMenu
+
+var stream = null
 
 func play_sound(sound: String):
-	var stream = null
-	
 	if sound == "clickSound":
 		stream = clickSound
 	
@@ -43,6 +45,20 @@ func play_sound(sound: String):
 		var sounds = moveSound.get_children()
 		var rand = randi() % sounds.size()
 		stream = sounds[rand]
+	
+	elif sound == "mainGame":
+		stream = mainGame
+		
+	elif sound == "mainMenu":
+		stream = mainMenu
 		
 	stream.play()
 
+
+func stop_sound(sound: String):
+	if sound == "mainMenu":
+		mainMenu.stop()
+	
+	elif sound == "mainGame":
+		mainGame.stop()
+	#stream.stop()
