@@ -1,0 +1,156 @@
+[gd_scene load_steps=16 format=3 uid="uid://cmkjwmjo3vi1o"]
+
+[ext_resource type="Script" path="res://Scripts/Menu.gd" id="1_1y7qs"]
+[ext_resource type="Texture2D" uid="uid://beesme6xwchok" path="res://Assets/UI/background.png" id="1_gtbmu"]
+[ext_resource type="Theme" uid="uid://dgl2fhmxpvv3i" path="res://Assets/UI/base_theme.tres" id="2_1qbyq"]
+[ext_resource type="Texture2D" uid="uid://dpqwseqb0d5tx" path="res://Assets/Carabao/cb2.png" id="4_0xync"]
+[ext_resource type="Texture2D" uid="uid://sovg3at4uicg" path="res://Assets/Carabao/cb3.png" id="6_vyyxf"]
+[ext_resource type="Texture2D" uid="uid://b7yqlc7b3kwhx" path="res://Assets/Carabao/cb4.png" id="7_pbfvv"]
+[ext_resource type="Texture2D" uid="uid://dpriabveohfe5" path="res://Assets/Carabao/cb5.png" id="8_7mv4m"]
+[ext_resource type="Theme" uid="uid://bfd857okf6esm" path="res://Assets/UI/buttonTheme.tres" id="8_xyr7i"]
+[ext_resource type="FontFile" uid="uid://da8ve8i1xffv2" path="res://Assets/Fonts/rainyhearts.ttf" id="9_01xle"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f6y1j"]
+atlas = ExtResource("4_0xync")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qqaof"]
+atlas = ExtResource("6_vyyxf")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_3f0mn"]
+animations = [{
+"frames": [{
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_f6y1j")
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_qqaof")
+}],
+"loop": true,
+"name": &"default",
+"speed": 3.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xu6ds"]
+atlas = ExtResource("7_pbfvv")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1ytxe"]
+atlas = ExtResource("8_7mv4m")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dk8oh"]
+animations = [{
+"frames": [{
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_xu6ds")
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_1ytxe")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1y7qs")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 320.0
+offset_bottom = 176.0
+texture = ExtResource("1_gtbmu")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -76.5
+offset_top = -64.0
+offset_right = 76.5
+offset_bottom = -26.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_1qbyq")
+theme_override_font_sizes/font_size = 40
+text = "CARABAO"
+
+[node name="CB1" type="AnimatedSprite2D" parent="."]
+position = Vector2(54, 124)
+scale = Vector2(4, 4)
+sprite_frames = SubResource("SpriteFrames_3f0mn")
+frame_progress = 0.34319
+
+[node name="CB2" type="AnimatedSprite2D" parent="."]
+position = Vector2(266, 124)
+scale = Vector2(4, 4)
+sprite_frames = SubResource("SpriteFrames_dk8oh")
+frame_progress = 0.202431
+flip_h = true
+
+[node name="PlayButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -35.0
+offset_top = -12.0
+offset_right = 35.0
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("8_xyr7i")
+theme_override_fonts/font = ExtResource("9_01xle")
+text = "Play"
+
+[node name="FactButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -35.0
+offset_top = 20.0
+offset_right = 35.0
+offset_bottom = 44.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("8_xyr7i")
+theme_override_fonts/font = ExtResource("9_01xle")
+text = "Fact"
+
+[node name="QuiButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -35.0
+offset_top = 52.0
+offset_right = 35.0
+offset_bottom = 76.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("8_xyr7i")
+theme_override_fonts/font = ExtResource("9_01xle")
+text = "Quit Game"
+
+[connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="FactButton" to="." method="_on_fact_button_pressed"]
+[connection signal="pressed" from="QuiButton" to="." method="_on_qui_button_pressed"]
