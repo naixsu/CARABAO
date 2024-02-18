@@ -16,7 +16,7 @@ var overlayTiles = []
 var newOverlayTiles = []
 var radius = 0
 var tilledCount = 0
-var lookTime = .5
+var lookTime = .2
 
 var rows = 11
 var cols = 20
@@ -111,7 +111,18 @@ func calculate_travel_time(start: Vector2, end: Vector2, speed: float) -> float:
 
 
 func stop_moving():
-	print("Stop moving")
+	var t = local_to_map(mainCarabao.position)
+	print("Stop moving: ", t)
+	var tileObj = newTileDict[str(t)]
+	if newTileDict[str(t)].isTilled:
+		print("Tilling tile: ", t)
+		newTileDict[str(t)].isSeed = true
+		mainCarabao.pos = t
+		move_carabao(t)
+		tilledCount -= 1
+	
+	if tilledCount > 0:
+		look_for_tiles()
 
 
 func move_to(t: Vector2i):
@@ -134,7 +145,10 @@ func move_to(t: Vector2i):
 func check_for_tilled():
 	print("Checking for tilled tiles among overlays")
 	for t in overlayTiles:
-		if newTileDict[str(t)].isTilled:
+		if newTileDict[str(t)].isTilled and not newTileDict[str(t)].isSeed:
+			radius = 0
+			overlayTiles = []
+			newOverlayTiles = []
 			move_to(t)
 
 	
@@ -174,7 +188,7 @@ func look_for_tiles():
 		for neighbor in neighbors:
 			if neighbor.y > 7 or neighbor.y < 2 or\
 				neighbor.x > 17 or neighbor.x < 2:
-					print("Out of bounds: ", neighbor)
+					#print("Out of bounds: ", neighbor)
 					continue
 			if neighbor not in newOverlayTiles:
 				newOverlayTiles.append(neighbor)
@@ -226,7 +240,7 @@ func set_tile(pos: Vector2, type: String, click: bool):
 		and currentState == State.LOOKING: # planting
 			set_cell(tilemapLayers["overlay"], pos, tilemapTiles["overlay"], Vector2i(0, 0), 0)
 	
-	print("set tile: ", tileObj)
+	#print("set tile: ", tileObj)
 
 
 func distance_to_carabao(pos: Vector2i):
@@ -298,11 +312,14 @@ func disable_button_on_state():
 			randomButton.disabled = true
 			
 		State.CARABAO:
-			plantButton.disabled = true
+			if tilledCount > 0:
+				plantButton.disabled = false
+			else:
+				plantButton.disabled = true
 
 		State.RANDOM:
 			hoeButton.disabled = false
-			plantButton.disabled = false
+			#plantButton.disabled = false
 			carabaoButton.disabled = false
 			randomButton.disabled = false
 
@@ -310,6 +327,34 @@ func disable_button_on_state():
 func clear_tiles():
 	# Clear all tilled tiles
 	erase_layer_tiles(tilemapLayers["tilled"])
+	
+	# Set isTilled on all tiles to false
+	for tileData in tileDict.values():
+		tileData.isTilled = false
+		tileData.isSeed = false
+		tileData.isGrown = false
+	
+	if carabaoSpawned:
+		carabaoSpawned = false
+		mainCarabao.queue_free()
+
+
+func random_place():
+	# Random till
+	set_state(State.TILLING)
+	
+	for col in cols:
+		for row in rows:
+			if col == 0 or col == cols - 1\
+			or row == 0 or row == rows - 1 or row == rows - 2:
+				continue
+			
+			var pos = Vector2(col, row)
+			
+			if randf() < randomTilledChance:
+				set_tile(pos, "tilled", false)
+	
+
 	
 	# Carabao process
 	carabaoSpawned = false
@@ -328,30 +373,12 @@ func clear_tiles():
 				move_carabao(coords)
 				
 			carabaoSpawned = true
-	
-	# Set isTilled on all tiles to false
-	
-	for tileData in tileDict.values():
-		if tileData.isTilled:
-			tileData.isTilled = false
-			
-	# Random till
-	set_state(State.TILLING)
-	
-	for col in cols:
-		for row in rows:
-			if col == 0 or col == cols - 1\
-			or row == 0 or row == rows - 1 or row == rows - 2:
-				continue
-			
-			var pos = Vector2(col, row)
-			
-			if randf() < randomTilledChance:
-				set_tile(pos, "tilled", false)
+			set_state(State.CARABAO)
 
 
 func randomize_tiles():
 	clear_tiles()
+	random_place()
 
 
 func erase_layer_tiles(layer: int):
@@ -464,3 +491,7 @@ func _on_carabao_button_pressed():
 func _on_random_button_pressed():
 	set_state(State.RANDOM)
 	randomize_tiles()
+
+
+func _on_cancel_button_pressed():
+	clear_tiles()

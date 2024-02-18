@@ -35,11 +35,16 @@ func _process(_delta):
 	
 	var reformed = Vector2(int(x), int(y))
 	
-	if reformed == targetPos:
-		velocity = Vector2.ZERO
-		stop_moving.emit()
-		play_idle()
-		moving = false
+	#print(reformed, " : ", targetPos)
+
+	
+	if reformed == targetPos or\
+		reformed.x - 1 == targetPos.x or reformed.x + 1 == targetPos.x or\
+		reformed.y - 1 == targetPos.y or reformed.y + 1 == targetPos.y:
+			velocity = Vector2.ZERO
+			stop_moving.emit()
+			play_idle()
+			moving = false
 		
 	move_and_slide()
 
