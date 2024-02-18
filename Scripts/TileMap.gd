@@ -112,6 +112,9 @@ func _process(_delta):
 
 func _input(event):
 	# Click to till
+	if not tileDict.has(str(tile)):
+		return
+		
 	if event.is_action_pressed("Click"):
 		if currentState == State.TILLING:
 			set_tile(tile, "tilled", true, 0)
@@ -246,6 +249,7 @@ func stop_moving():
 	newTileDict[str(t)].isHarvested and not newTileDict[str(t)].isGrown:
 		print("Planting tile: ", t)
 		set_tile(t, "plant", false, 1)
+		AudioManager.play_sound("plantSound")
 		newTileDict[str(t)].isSeed = true
 		# instantiate a seednode 
 		var seedNode = SeedNode.instantiate()
@@ -555,7 +559,7 @@ func clear_tiles():
 func random_place():
 	# Random till
 	set_state(State.TILLING)
-	
+	AudioManager.play_sound("plantSound")
 	for col in cols:
 		for row in rows:
 			if col == 0 or col == cols - 1\

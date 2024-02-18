@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://legjpl3yd68r"]
+[gd_scene load_steps=10 format=3 uid="uid://legjpl3yd68r"]
 
 [ext_resource type="Script" path="res://Scripts/AudioManager.gd" id="1_amvtu"]
 [ext_resource type="AudioStream" uid="uid://c17ltsgq13dpv" path="res://Assets/Audio/Click.mp3" id="2_1yaxb"]
@@ -6,6 +6,9 @@
 [ext_resource type="AudioStream" uid="uid://b4qvplml3d10c" path="res://Assets/Audio/Till2.ogg" id="4_lx2ey"]
 [ext_resource type="AudioStream" uid="uid://b1kv8l1iyuc35" path="res://Assets/Audio/Till3.ogg" id="5_026an"]
 [ext_resource type="AudioStream" uid="uid://b2xx81cbgjpmp" path="res://Assets/Audio/Till4.ogg" id="6_3kpp4"]
+[ext_resource type="AudioStream" uid="uid://d70r66bd677x" path="res://Assets/Audio/plant1.ogg" id="7_6d2pi"]
+[ext_resource type="AudioStream" uid="uid://ry2nwgfvykc3" path="res://Assets/Audio/plant2.ogg" id="8_acyf2"]
+[ext_resource type="AudioStream" uid="uid://di6xm7gvf4qwk" path="res://Assets/Audio/plant3.ogg" id="9_md7cm"]
 
 [node name="AudioManager" type="Node"]
 script = ExtResource("1_amvtu")
@@ -30,4 +33,18 @@ volume_db = -5.0
 
 [node name="Till4" type="AudioStreamPlayer" parent="TillSounds"]
 stream = ExtResource("6_3kpp4")
+volume_db = -5.0
+
+[node name="PlantSounds" type="Node" parent="."]
+
+[node name="Plant1" type="AudioStreamPlayer" parent="PlantSounds"]
+stream = ExtResource("7_6d2pi")
+volume_db = -5.0
+
+[node name="Plant2" type="AudioStreamPlayer" parent="PlantSounds"]
+stream = ExtResource("8_acyf2")
+volume_db = -5.0
+
+[node name="Plant3" type="AudioStreamPlayer" parent="PlantSounds"]
+stream = ExtResource("9_md7cm")
 volume_db = -5.0
