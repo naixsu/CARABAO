@@ -1,5 +1,5 @@
 <h2 align="center">
-  <img src="Assets/Carabao/cb1exp.png" style="vertical-align: bottom">
+  <img src="Assets/Carabao/CarabaoGif.gif" style="vertical-align: bottom">
 
   <b>CARABAO</b>
  
