@@ -400,7 +400,6 @@ drag_and_drop_selection_enabled = false
 virtual_keyboard_enabled = false
 middle_mouse_paste_enabled = false
 wrap_mode = 1
-scroll_vertical = 14.0
 
 [node name="BackButton" type="Button" parent="FactNode"]
 layout_mode = 0

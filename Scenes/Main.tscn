@@ -234,6 +234,8 @@ layer_5/tile_data = PackedInt32Array()
 script = ExtResource("1_m65e4")
 CarabaoScene = ExtResource("14_b15w6")
 SeedNode = ExtResource("11_c4u70")
+lookTime = 0.3
+seedTimer = 2
 
 [node name="HoeButton" type="Button" parent="."]
 offset_left = 83.0

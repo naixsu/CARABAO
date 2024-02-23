@@ -47,9 +47,11 @@ func _process(_delta):
 	#is_point_close_enough(position, targetPos, 0.2):
 			
 			velocity = Vector2.ZERO
+			position = targetPos
 			stop_moving.emit()
 			play_idle()
 			#print("here: ", velocity)
+			#
 			moving = false
 		
 	move_and_slide()

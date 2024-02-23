@@ -278,7 +278,7 @@ func stop_moving():
 		AudioManager.play_sound("harvestSound")
 		mainCarabao.pos = t
 		move_carabao(t)
-		erase_tile(tilemapLayers["plant"], t)
+		
 		newTileDict[str(t)].isHarvested = true
 		newTileDict[str(t)].isGrown = false
 		newTileDict[str(t)].isSeed = false
@@ -287,10 +287,14 @@ func stop_moving():
 		radius = 0
 		overlayTiles = []
 		newOverlayTiles = []
+		erase_tile(tilemapLayers["plant"], t)
+		erase_layer_tiles(tilemapLayers["overlay"])
 		
-		if tilledCount == 0 and grownCount > 0:
-			set_state(State.LOOKING)
-			look_for_tiles()
+		#if tilledCount == 0 and grownCount > 0:
+		if tilledCount == 0 and currentState == State.HARVESTING\
+		 	and maxHarvestCount != harvestCount:
+				set_state(State.LOOKING)
+				look_for_tiles()
 			
 		elif tilledCount == 0 and grownCount == 0 and maxHarvestCount == harvestCount:
 			set_state(State.GAMEOVER)
