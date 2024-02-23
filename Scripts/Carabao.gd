@@ -15,7 +15,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	#print(moving)
+	flip_sprite()
 	if not moving:
 		return
 		
@@ -36,24 +36,16 @@ func _process(_delta):
 	
 	var reformed = Vector2(int(x), int(y))
 	
-	#print(reformed, " : ", targetPos)
-
-	
 	if reformed == targetPos or\
 		reformed.x - 1 == targetPos.x or reformed.x + 1 == targetPos.x or\
 		reformed.y - 1 == targetPos.y or reformed.y + 1 == targetPos.y:
-	
-	#if reformed == targetPos or \
-	#is_point_close_enough(position, targetPos, 0.2):
 			
 			velocity = Vector2.ZERO
 			position = targetPos
 			stop_moving.emit()
 			play_idle()
-			#print("here: ", velocity)
-			#
 			moving = false
-		
+			
 	move_and_slide()
 
 func is_point_close_enough(point: Vector2, target: Vector2, margin: float) -> bool:
@@ -61,11 +53,8 @@ func is_point_close_enough(point: Vector2, target: Vector2, margin: float) -> bo
 
 func go_towards_target_point(currentAgentPosition, nextPathPosition):
 	moving = true
-	#print("moving ", moving, " ", currentAgentPosition, " ", nextPathPosition)
 	var newVelocity: Vector2 = nextPathPosition - currentAgentPosition
-	#print("newVelocity: ", newVelocity)
 	targetPos = nextPathPosition
-	#print("targetPos: ", targetPos)
 	newVelocity = newVelocity.normalized()
 	newVelocity = newVelocity * speed
 	velocity = newVelocity
@@ -78,5 +67,10 @@ func play_run():
 func play_idle():
 	anim.play("idle")
 	
+func flip_sprite():
+	if velocity.x < 0:
+		anim.flip_h = true
+	elif velocity.x > 0:
+		anim.flip_h = false
 
 	

@@ -101,16 +101,6 @@ func _process(_delta):
 	tilledCountLabel.text = str(tilledCount)
 	grownCountLabel.text = str(grownCount)
 	harvestCountLabel.text = str(harvestCount)
-	
-	#if currentState == State.PATROLLING:
-		#await get_tree().create_timer(2).timeout
-		#if not isPatrolling:
-			#if randf() < patrolChance:
-				#patrol()
-				#isPatrolling = true
-	
-	#if carabaoSpawned:
-		#print(local_to_map(mainCarabao.position))
 
 
 func _input(event):
@@ -127,8 +117,14 @@ func _input(event):
 			set_tile(tile, "carabao", true, 0)
 			
 	if event.is_action_pressed("RClick"):
-		set_tile(tile, "grass", true, 0)
-		AudioManager.play_sound("tillSound")
+		if currentState == State.TILLING:
+			set_tile(tile, "grass", true, 0)
+			AudioManager.play_sound("tillSound")
+		elif currentState == State.CARABAO:
+			if tile.x == mainCarabao.pos.x and tile.y == mainCarabao.pos.y:
+				mainCarabao.queue_free()
+				carabaoSpawned = false
+				plantButton.disabled = true
 
 
 func set_tile(pos: Vector2, type: String, click: bool, phase: int):
@@ -152,13 +148,7 @@ func set_tile(pos: Vector2, type: String, click: bool, phase: int):
 			move_carabao(tile)
 		
 		plantButton.disabled = false
-			
-	elif type == "seed":
-		tileObj.isSeed = true
-		
-	elif type == "grow":
-		tileObj.isGrown = true
-		
+
 	elif type == "grass" and currentState == State.TILLING: # untill tile
 		if tileObj.isTilled and not tileObj.isSeed:
 			erase_cell(tilemapLayers["tilled"], tile)
@@ -178,10 +168,6 @@ func set_tile(pos: Vector2, type: String, click: bool, phase: int):
 			plantTiles[phase],
 			0
 		)
-	
-	#print("set tile: ", tileObj)
-
-
 
 
 func plant_tiles():
@@ -202,12 +188,10 @@ func calculate_travel_time(start: Vector2, end: Vector2, speed: float) -> float:
 
 
 func end_phase(seedNode: Node2D):
-	#print("Ending phase of: ", seedNode)
 	var phase = newTileDict[str(seedNode.name)].seedPhase
 	phase += 1
 	
 	if phase == 4:
-		#print("LAST PHASE OF: ", str(seedNode.name))
 		set_tile(newTileDict[str(seedNode.name)].pos, "plant", false, phase)
 		newTileDict[str(seedNode.name)].isGrown = true
 		grownCount += 1
@@ -221,29 +205,6 @@ func end_phase(seedNode: Node2D):
 
 func stop_moving():
 	var t = local_to_map(mainCarabao.position)
-	print("Stop moving: ", t)
-	
-	#if currentState == State.PATROLLING:
-		#isPatrolling = false
-		##move_carabao(t)
-		##patrol()
-		##return
-	
-	#if currentState == State.HARVESTING:
-		#grownCount -= 1
-		#harvestCount += 1
-		#print("HARVESTED AT: ", str(t))
-		#radius = 0
-		#overlayTiles = []
-		#newOverlayTiles = []
-		#mainCarabao.pos = t
-		#move_carabao(t)
-		#newTileDict[str(t)].isHarvested = true
-		#newTileDict[str(t)].isSeed = false
-		#erase_tile(tilemapLayers["plant"], t)
-		#look_for_tiles()
-		
-	
 	# This is where seed is planted
 	if newTileDict[str(t)].isTilled and not newTileDict[str(t)].isSeed and not\
 	newTileDict[str(t)].isHarvested and not newTileDict[str(t)].isGrown:
@@ -290,7 +251,6 @@ func stop_moving():
 		erase_tile(tilemapLayers["plant"], t)
 		erase_layer_tiles(tilemapLayers["overlay"])
 		
-		#if tilledCount == 0 and grownCount > 0:
 		if tilledCount == 0 and currentState == State.HARVESTING\
 		 	and maxHarvestCount != harvestCount:
 				set_state(State.LOOKING)
@@ -310,28 +270,14 @@ func end_game():
 	AudioManager.stop_sound("mainGame")
 	AudioManager.play_sound("endSound")
 	end.show()
-	
-	
 
 
 func move_to(t: Vector2i):
-	#print("moving to, ", str(t))
-	#radius = 0
-	#overlayTiles = []
-	#newOverlayTiles = []
-	#if currentState != State.HARVESTING:
 	AudioManager.play_sound("moveSound")
 	set_state(State.MOVING)
 	# move carabao from mainCarabao.pos to t
 	var targetPosition = map_to_local(t)
-	#print(targetPosition)
 
-	#var tween = create_tween()
-	##tween.tween_property(mainCarabao, "position", Vector2(mainCarabao.pos.x, mainCarabao.pos.y), 1)
-	#var time = calculate_travel_time(mainCarabao.pos, t, mainCarabao.speed)
-	#print("TIME: ", time)
-	#tween.tween_property(mainCarabao, "position", Vector2(target_position.x, target_position.y), time)
-	#mainCarabao.play_run()
 	mainCarabao.moving = true
 	mainCarabao.go_towards_target_point(mainCarabao.position, targetPosition)
 	
@@ -341,59 +287,19 @@ func check_for_tilled():
 	for t in overlayTiles:
 		if currentState == State.LOOKING:
 			if newTileDict[str(t)].isTilled and not newTileDict[str(t)].isSeed and not\
-			newTileDict[str(t)].isHarvested and not newTileDict[str(t)].isGrown:
-				#radius = 0
-				#overlayTiles = []
-				#newOverlayTiles = []
-				move_to(t)
+				newTileDict[str(t)].isHarvested and not newTileDict[str(t)].isGrown:
+					move_to(t)
 				
 			elif newTileDict[str(t)].isGrown and tilledCount == 0:
 				move_to(t)
-			
-			#elif newTileDict[str(t)].isTilled and newTileDict[str(t)].isGrown and not\
-			#newTileDict[str(t)].isHarvested:
-				#print("SEED FOUND AT: ", str(t))
-				#set_state(State.HARVESTING)
-				#radius = 0
-				#overlayTiles = []
-				#newOverlayTiles = []
-				#move_to(t)
-				
-	
+
+
 func look_for_tiles():
-	#overlayTiles = []
-	#newOverlayTiles = []
-	#if currentState == State.MOVING:
-		#print("MOVING")
-		#radius = 0
-		#overlayTiles = []
-		#newOverlayTiles = []
-		#erase_layer_tiles(tilemapLayers["overlay"])
-		#return
-		
-	#if tilledCount == 0:
-		#radius = 0
-		#overlayTiles = []
-		#newOverlayTiles = []
-		#erase_layer_tiles(tilemapLayers["overlay"])
-		#return
-	
-			
-	#if grownCount > 0 and currentState != State.HARVESTING:
-		##print("Harvesting")
-		#set_state(State.HARVESTING)
-	#else:
-		#print("Patrolling")
-		#set_state(State.PATROLLING)
-		
 	await get_tree().create_timer(lookTime).timeout
 	set_state(State.LOOKING)
 	radius += 1
-	#print("Looking for tiles with radius: ", radius)
+
 	erase_layer_tiles(tilemapLayers["overlay"])
-	
-	
-	#set_tile(mainCarabao.pos, "overlay", false, 0)
 	
 	if radius == 1:
 		overlayTiles.append(mainCarabao.pos)
@@ -406,7 +312,6 @@ func look_for_tiles():
 	
 	
 	for tilePos in overlayTiles:
-		#print(tilePos)
 		# Add the current tile to the list
 		newOverlayTiles.append(tilePos)
 		
@@ -426,9 +331,7 @@ func look_for_tiles():
 					continue
 			if neighbor not in newOverlayTiles:
 				newOverlayTiles.append(neighbor)
-				#set_tile(neighbor, "overlay", false, 0)
-	
-	#print(newOverlayTiles)
+
 	newOverlayTiles = array_unique(newOverlayTiles)
 	
 	for neighbor in newOverlayTiles:
@@ -453,7 +356,6 @@ func array_unique(array: Array) -> Array:
 
 func move_carabao(pos: Vector2i):
 	if not carabaoSpawned:
-		#print("Carabao not spawned")
 		return
 		
 	mainCarabao.position = map_to_local(pos)
@@ -473,7 +375,6 @@ func spawn_carabao(pos: Vector2i):
 	var main = root.get_node("Main")
 	carabaoContainer.add_child(mainCarabao)
 	mainCarabao.connect("stop_moving", stop_moving)
-	
 
 
 func check_tilled_dict():
@@ -497,19 +398,8 @@ func set_state(newState):
 	
 	currentState = newState
 	print("state changed: ", currentState)
-	
-	#if currentState == State.PATROLLING:
-		#patrol()
-	
+
 	disable_button_on_state()
-
-
-func patrol():
-	var randomTile = newTileDict.keys()[randi() % newTileDict.size()]
-	randomTile = newTileDict[str(randomTile)].pos
-	print("Patrolling to: ", str(randomTile))
-	move_to(randomTile)
-	
 
 
 func disable_button_on_state():
@@ -523,6 +413,7 @@ func disable_button_on_state():
 		State.TILLING:
 			if not carabaoSpawned:
 				carabaoButton.disabled = true
+				plantButton.disabled = true
 			else:
 				plantButton.disabled = false
 		
@@ -533,7 +424,7 @@ func disable_button_on_state():
 			randomButton.disabled = true
 			
 		State.CARABAO:
-			if tilledCount > 0:
+			if tilledCount > 0 and carabaoSpawned:
 				plantButton.disabled = false
 			else:
 				plantButton.disabled = true
@@ -596,7 +487,6 @@ func random_place():
 		var randomTile = tileDict.keys()[randi() % tileDict.size()]
 		
 		if not tileDict[str(randomTile)].isOuter:
-			#mainCarabao.position = map_to_local(Vector2())
 			randomTile = tileDict[str(randomTile)].pos
 			var coords = Vector2i(randomTile)
 			
@@ -709,8 +599,6 @@ func init():
 
 			init_set_tile(pos, atlas, isOuter)
 
-	#set_state(State.TILLING)
-
 
 func go_to_menu():
 	var root = get_tree().get_root()
@@ -718,7 +606,6 @@ func go_to_menu():
 	var main = root.get_node("Main")
 	menu.main_menu()
 	menu.show()
-	#await get_tree().create_timer(0.2).timeout
 	main.queue_free()
 
 
@@ -747,8 +634,8 @@ func _on_random_button_pressed():
 func _on_cancel_button_pressed():
 	AudioManager.play_sound("clickSound")
 	AudioManager.play_sound("clearSound")
-	set_state(State.TILLING)
 	clear_tiles()
+	set_state(State.TILLING)
 
 
 func _on_back_button_pressed():
@@ -760,8 +647,8 @@ func _on_play_again_button_pressed():
 	AudioManager.play_sound("clickSound")
 	AudioManager.play_sound("clearSound")
 	end.hide()
-	set_state(State.TILLING)
 	clear_tiles()
+	set_state(State.TILLING)
 
 
 func _on_menu_button_pressed():
