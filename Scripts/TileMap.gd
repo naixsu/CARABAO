@@ -88,6 +88,7 @@ var isPatrolling : bool = false
 func _ready():
 	# Init
 	# Godot does cols first
+	AudioManager.play_sound("mainGame")
 	init()
 	
 	
@@ -302,6 +303,8 @@ func look_for_tiles():
 	erase_layer_tiles(tilemapLayers["overlay"])
 	
 	if radius == 1:
+		if mainCarabao == null:
+			return
 		overlayTiles.append(mainCarabao.pos)
 		check_for_tilled()
 		if currentState == State.LOOKING:
@@ -405,10 +408,10 @@ func set_state(newState):
 func disable_button_on_state():
 	match currentState:
 		State.SETUP:
-			#hoeButton.disabled = true
+			hoeButton.disabled = false
 			plantButton.disabled = true
 			carabaoButton.disabled = true
-			#randomButton.disabled = true
+			randomButton.disabled = false
 			
 		State.TILLING:
 			if not carabaoSpawned:
@@ -545,7 +548,6 @@ func init_set_tile(pos: Vector2, atlas: Vector2i, isOuter: bool):
 
 
 func init():
-	AudioManager.play_sound("mainGame")
 	disable_button_on_state()
 	for col in cols:
 		for row in rows:
@@ -635,7 +637,8 @@ func _on_cancel_button_pressed():
 	AudioManager.play_sound("clickSound")
 	AudioManager.play_sound("clearSound")
 	clear_tiles()
-	set_state(State.TILLING)
+	init()
+	set_state(State.SETUP)
 
 
 func _on_back_button_pressed():
